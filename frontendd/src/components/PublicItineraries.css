@@ -1,0 +1,176 @@
+.public-itineraries-container {
+  max-width: 900px;
+  margin: 2.5rem auto 2rem auto;
+  padding: 0 1.1rem 2rem 1.1rem;
+  font-family: "Nunito", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+.page-title {
+  font-size: 1.7rem;
+  font-weight: 800;
+  color: #800020;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.login-message,
+.empty-message {
+  text-align: center;
+  color: #7d0b0b;
+  margin-top: 2rem;
+}
+
+/* Itinerary card */
+.public-itinerary-card {
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 3px 22px rgba(26, 35, 126, 0.15);
+  margin-bottom: 2rem;
+  border: 1px solid #e3e9f7;
+  padding: 1rem 1.2rem 1rem 1.2rem;
+  transition: box-shadow 0.26s ease, transform 0.15s ease;
+}
+
+.public-itinerary-card:hover {
+  box-shadow: 0 6px 45px rgba(164, 43, 43, 0.28);
+  transform: translateY(-2px);
+}
+
+/* Header */
+.public-itinerary-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 0.9rem;
+}
+
+.public-itinerary-cover {
+  width: 130px;
+  height: 90px;
+  object-fit: cover;
+  border-radius: 14px;
+  box-shadow: 0 2px 8px rgba(25, 82, 150, 0.5);
+  flex-shrink: 0;
+}
+
+.public-itinerary-title-date {
+  flex: 1;
+}
+
+.public-itinerary-title-date h3 {
+  margin: 0 0 0.2rem 0;
+  font-weight: 800;
+  color: #15294f;
+  font-size: 1.25rem;
+}
+
+.public-itinerary-title-date time {
+  font-size: 0.9rem;
+  color: #6e7d9a;
+  font-weight: 600;
+}
+
+.shared-by {
+  font-size: 0.88rem;
+  color: #8a94a6;
+  margin-top: 0.25rem;
+}
+
+/* Places list */
+.public-itinerary-places {
+  margin-top: 0.85rem;
+  border-top: 1px solid #e9efff;
+  padding-top: 0.85rem;
+}
+
+.public/place-item {
+  display: flex;
+  gap: 0.85rem;
+  padding: 0.6rem 0;
+  border-bottom: 1px solid #f3f6ff;
+}
+
+.public/place-item:last-child {
+  border-bottom: none;
+}
+
+.place-thumbnail {
+  width: 90px;
+  height: 70px;
+  border-radius: 12px;
+  object-fit: cover;
+  flex-shrink: 0;
+  box-shadow: 0 1px 5px rgba(31, 111, 196, 0.3);
+}
+
+.place-info {
+  flex: 1;
+}
+
+.place-info h4 {
+  margin: 0;
+  font-size: 1.02rem;
+  font-weight: 700;
+  color:  #a91c3f;
+}
+
+.place-info time {
+  font-size: 0.85rem;
+  color:  #a92d4c;
+  display: block;
+  margin-top: 0.12rem;
+}
+
+.place-info ul {
+  margin: 0.25rem 0 0 0;
+  padding-left: 1.15rem;
+  font-size: 0.9rem;
+  color:  #800020;
+}
+
+.place-info ul li {
+  margin-bottom: 0.15rem;
+}
+
+/* Responsive */
+@media only screen and (max-width: 720px) {
+  .public-itinerary-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.8rem;
+  }
+
+  .public-itinerary-cover {
+    width: 100%;
+    height: 140px;
+  }
+
+  .public/place-item {
+    flex-direction: column;
+  }
+
+  .place-thumbnail {
+    width: 100%;
+    height: 130px;
+    margin-bottom: 0.6rem;
+  }
+}
+
+
+/* Global save button styling – overrides older blue versions */
+.feed-btn.save-btn,
+.save-btn {
+  background: #7b001c;        /* burgundy */
+  color: #ffffff;
+}
+
+.feed-btn.save-btn:hover,
+.save-btn:hover {
+  background: #5b0015;  
+}      
+
+.save-btn.saved {
+  background: #7b001c;
+  color: #ffffff;
+}
+

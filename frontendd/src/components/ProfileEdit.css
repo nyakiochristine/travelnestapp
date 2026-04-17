@@ -1,0 +1,255 @@
+/* ProfileEdit.css */
+
+:root {
+  --burgundy: #7b001c;
+  --burgundy-dark: #5b0015;
+  --burgundy-soft: #fff3f6;
+  --border-soft: #e6dde6;
+  --text-main: #1c2233;
+  --text-muted: #6b7280;
+}
+
+/* Layout */
+
+.profile-edit-container {
+  max-width: 880px;
+  margin: 2.4rem auto 2.8rem auto;
+  padding: 0 1.2rem;
+  font-family: "Nunito", system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", sans-serif;
+  color: var(--text-main);
+}
+
+.profile-edit-card {
+  background: #ffffff;
+  border-radius: 22px;
+  box-shadow: 0 12px 40px rgba(65, 19, 32, 0.18);
+  border: 1px solid var(--border-soft);
+  padding: 1.7rem 1.9rem 1.9rem 1.9rem;
+}
+
+.profile-edit-card h2 {
+  margin: 0 0 1.2rem 0;
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--burgundy);
+  text-align: center;
+}
+
+/* Messages */
+
+.message {
+  margin-bottom: 0.9rem;
+  padding: 0.55rem 0.9rem;
+  border-radius: 12px;
+  font-size: 0.9rem;
+}
+
+.message.success {
+  background: #ecfdf3;
+  color: #166534;
+  border: 1px solid #bbf7d0;
+}
+
+.message.error {
+  background: #fef2f2;
+  color: #b91c1c;
+  border: 1px solid #fecaca;
+}
+
+/* Form layout */
+
+.edit-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* Profile picture */
+
+.profile-pic-section {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 0.4rem;
+}
+
+.current-avatar {
+  width: 86px;
+  height: 86px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid var(--burgundy);
+  box-shadow: 0 3px 14px rgba(65, 19, 32, 0.4);
+}
+
+.file-input {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+/* Generic fields */
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-main);
+  margin-bottom: 0.25rem;
+}
+
+.form-input {
+  border-radius: 12px;
+  border: 1px solid #d4d9ee;
+  background: #f9f9ff;
+  padding: 0.6rem 0.8rem;
+  font-size: 0.95rem;
+  color: var(--text-main);
+  transition: border-color 0.18s ease, box-shadow 0.18s ease,
+    background 0.18s ease;
+}
+
+.form-input::placeholder {
+  color: var(--text-muted);
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: var(--burgundy);
+  background: #fff7fb;
+  box-shadow: 0 0 0 2px rgba(123, 0, 28, 0.16);
+}
+
+.form-group small {
+  margin-top: 0.15rem;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  align-self: flex-end;
+}
+
+/* Row + social grid */
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1.1fr 1.1fr;
+  gap: 1rem;
+}
+
+.social-links {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+/* Actions */
+
+.edit-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  margin-top: 0.6rem;
+}
+
+.cancel-btn,
+.save-btn {
+  border-radius: 999px;
+  border: none;
+  padding: 0.45rem 1.3rem;
+  font-size: 0.92rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.18s ease, color 0.18s ease,
+    transform 0.08s ease, box-shadow 0.16s ease;
+}
+
+.cancel-btn {
+  background: #f3f4f6;
+  color: var(--text-main);
+}
+
+.cancel-btn:hover:not(:disabled) {
+  background: #e0e2e7;
+}
+
+.save-btn {
+  background: var(--burgundy);
+  color: #ffffff;
+  box-shadow: 0 3px 10px rgba(65, 19, 32, 0.5);
+}
+
+.save-btn:hover:not(:disabled) {
+  background: var(--burgundy-dark);
+  transform: translateY(-1px);
+}
+
+.cancel-btn:disabled,
+.save-btn:disabled {
+  opacity: 0.7;
+  cursor: default;
+  box-shadow: none;
+}
+
+/* Global error fallback */
+
+.error {
+  text-align: center;
+  color: #b91c1c;
+  margin-top: 2rem;
+  font-family: "Nunito", system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", sans-serif;
+}
+
+/* Responsive */
+
+@media (max-width: 768px) {
+  .profile-edit-container {
+    padding: 0 0.9rem;
+  }
+
+  .profile-edit-card {
+    padding: 1.4rem 1.3rem 1.6rem 1.3rem;
+    border-radius: 18px;
+  }
+
+  .profile-pic-section {
+    align-items: flex-start;
+  }
+
+  .current-avatar {
+    width: 74px;
+    height: 74px;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .social-links {
+    grid-template-columns: 1fr;
+  }
+
+  .edit-actions {
+    flex-direction: row-reverse;
+  }
+}
+
+@media (max-width: 480px) {
+  .profile-edit-card {
+    padding: 1.2rem 1.1rem 1.4rem 1.1rem;
+  }
+
+  .edit-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .cancel-btn,
+  .save-btn {
+    width: 100%;
+    justify-content: center;
+  }
+}

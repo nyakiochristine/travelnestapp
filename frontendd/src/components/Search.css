@@ -1,0 +1,138 @@
+:root {
+  --burgundy: #7b001c;
+  --burgundy-dark: #5b0015;
+  --burgundy-soft: #fff3f6;
+  --border-soft: #e7dde6;
+  --text-main: #1c2233;
+  --text-muted: #6b7280;
+}
+
+/* outer shell to align with feed width */
+.search-shell {
+  max-width: 960px;
+  margin: 1.4rem auto 0.6rem auto;
+  padding: 0 1.1rem;
+}
+
+/* pill / card container */
+.search-card {
+  background: #ffffff;
+  border-radius: 999px;
+  border: 1px solid var(--border-soft);
+  box-shadow: 0 4px 18px rgba(65, 19, 32, 0.14);
+  padding: 0.4rem 0.7rem 0.4rem 0.9rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+/* main keyword bar */
+.search-main-input {
+  width: 100%;
+  border: none;
+  outline: none;
+  font-size: 0.95rem;
+  padding: 0.4rem 0.2rem;
+  color: var(--text-main);
+}
+
+.search-main-input::placeholder {
+  color: var(--text-muted);
+}
+
+/* secondary row: chips + buttons */
+.search-secondary-row {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  margin-top: 0.1rem;
+}
+
+/* small chip inputs */
+.search-chip-input {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: #faf5f8;
+  border-radius: 999px;
+  padding: 0.18rem 0.7rem;
+  border: 1px solid #f0e2ec;
+}
+
+.search-chip-input label {
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+}
+
+.search-chip-input input {
+  width: 70px;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 0.86rem;
+  color: var(--text-main);
+}
+
+/* buttons */
+
+.search-buttons {
+  margin-left: auto;
+  display: flex;
+  gap: 0.4rem;
+}
+
+.search-apply-btn,
+.search-clear-btn {
+  border-radius: 999px;
+  border: none;
+  padding: 0.35rem 1.1rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.18s ease, color 0.18s ease, transform 0.08s ease,
+    box-shadow 0.16s ease;
+}
+
+.search-apply-btn {
+  background: var(--burgundy);
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(65, 19, 32, 0.4);
+}
+
+.search-apply-btn:hover {
+  background: var(--burgundy-dark);
+  transform: translateY(-1px);
+}
+
+.search-clear-btn {
+  background: var(--burgundy-soft);
+  color: var(--burgundy-dark);
+}
+
+.search-clear-btn:hover {
+  background: #ffe5ee;
+}
+
+/* mobile */
+
+@media (max-width: 720px) {
+  .search-card {
+    border-radius: 18px;
+  }
+
+  .search-secondary-row {
+    flex-wrap: wrap;
+    align-items: flex-start;
+  }
+
+  .search-chip-input {
+    flex: 1 1 45%;
+  }
+
+  .search-buttons {
+    width: 100%;
+    justify-content: flex-end;
+  }
+}

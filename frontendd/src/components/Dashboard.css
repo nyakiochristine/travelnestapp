@@ -1,0 +1,162 @@
+:root {
+  --burgundy: #7b001c;
+  --burgundy-dark: #5b0015;
+  --burgundy-soft: #fff3f6;
+  --border-soft: #e6dde6;
+  --text-main: #1c2233;
+  --text-muted: #6b7280;
+  --gold: #f6b93b;
+}
+
+.dashboard-container {
+  max-width: 1040px;
+  margin: 2.2rem auto;
+  padding: 0 1.2rem;
+  font-family: "Nunito", sans-serif;
+}
+
+/* Tabs */
+.tab-navigation {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-bottom: 30px;
+}
+
+.tab-navigation button {
+  padding: 12px 28px;
+  border: none;
+  background: #f0f2f5;
+  border-radius: 30px;
+  cursor: pointer;
+  font-weight: 700;
+  transition: 0.3s ease;
+}
+
+.tab-navigation button.active {
+  background: var(--burgundy);
+  color: white;
+  box-shadow: 0 4px 15px rgba(123, 0, 28, 0.3);
+}
+
+/* Tool Cards */
+.tool-display-area {
+  max-width: 700px;
+  margin: 0 auto 50px auto;
+}
+
+.tool-card {
+  background: white;
+  padding: 30px;
+  border-radius: 20px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+  border: 1px solid var(--border-soft);
+}
+
+.tool-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.tool-form input, .tool-form select {
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid var(--border-soft);
+  background: #fdfdfd;
+}
+
+.btn-primary {
+  background: var(--burgundy);
+  color: white;
+  border: none;
+  padding: 12px;
+  border-radius: 10px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* Itinerary Card Styling */
+.itinerary-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(450px, 1fr));
+  gap: 25px;
+}
+
+.itinerary-item-card {
+  background: #ffffff;
+  border-radius: 20px;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.05);
+  border: 1px solid var(--border-soft);
+  padding: 1.2rem;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.itinerary-item-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 35px rgba(123, 0, 28, 0.1);
+}
+
+/* AI Style */
+.itinerary-item-card.is-ai {
+  border-left: 5px solid var(--gold);
+}
+
+.itinerary-header-row {
+  display: flex;
+  gap: 1.2rem;
+  margin-bottom: 1rem;
+}
+
+.itinerary-cover {
+  width: 140px;
+  height: 100px;
+  border-radius: 12px;
+  object-fit: cover;
+}
+
+.placeholder-bg {
+  background: #eee;
+}
+
+.itinerary-title {
+  font-size: 1.2rem;
+  color: var(--burgundy-dark);
+  margin: 0;
+}
+
+.badge {
+  font-size: 0.7rem;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.ai-badge { background: #fef9c3; color: #854d0e; border: 1px solid #fde047; }
+.user-badge { background: #dcfce7; color: #166534; border: 1px solid #86efac; }
+
+.itinerary-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 15px;
+  border-top: 1px solid #eee;
+  padding-top: 10px;
+}
+
+.edit-btn { background: var(--burgundy-soft);
+   color: var(--burgundy);
+    border: none; 
+    padding: 8px 15px;
+     border-radius: 20px;
+      cursor: pointer;
+       font-weight: 600; }
+.delete-btn { background: #fee2e2; 
+  color: #991b1b;
+   border: none;
+    padding: 8px 15px;
+     border-radius: 20px;
+      cursor: pointer;
+       font-weight: 600; }

@@ -1,0 +1,27 @@
+# dependencies
+node_modules/
+package-lock.json*   # optional, keep if you want lockfile in repo
+
+# build output
+build/
+dist/
+coverage/
+
+# local env / secrets
+.env
+.env.local
+*.env.*
+
+# OS / editor junk
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# uploads and other large generated files
+uploads/
+uploads/**
+*.log
+*.tmp
+
+

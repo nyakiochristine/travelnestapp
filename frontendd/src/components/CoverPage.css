@@ -1,0 +1,132 @@
+.cover-root {
+  min-height: 100vh;
+}
+
+.cover-bg {
+  min-height: 100vh;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.cover-main {
+  padding-top: 60px;
+  text-align: center;
+  color: #212121;
+}
+
+.cover-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+.travel {
+  color: #800020;
+}
+.nest {
+  color: #800020;
+}
+
+.cover-subtitle {
+  font-size: 1.2rem;
+  margin-bottom: 2rem;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.cover-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 32px;
+  margin-bottom: 1.2rem;
+}
+.explore-btn, .join-btn {
+  width: 160px;
+  padding: 14px 8px;
+  border-radius: 16px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.explore-btn {
+  background: #800020;
+  color: #fff;
+}
+.explore-btn:hover {
+  background: #a83246;
+}
+
+.join-btn {
+  background: #fff;
+  color: #800020;
+  border: 2px solid #800020;
+}
+.join-btn:hover {
+  background: #FFD700;
+  color: #800020;
+}
+
+.cover-tagline {
+  margin: 2.5rem 0 0 0;
+  font-size: 1.1rem;
+  font-weight: bold;
+  letter-spacing: 1.2px;
+}
+
+/* Footer is always at the bottom */
+.cover-footer {
+  background: #800020;
+  color: #fff;
+  text-align: center;
+  padding: 32px 20px;
+  margin-top: auto; /* This anchors it to the bottom */
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.community-title {
+  font-weight: 600;
+  font-size: 1.4rem;
+  margin-bottom: 0.5rem;
+}
+.community-desc {
+  font-size: 1rem;
+  margin-bottom: 1.2rem;
+}
+.footer-btn {
+  font-size: 1.08rem;
+  background: #fff;
+  color: #800020;
+  border: none;
+  border-radius: 14px;
+  padding: 10px 30px;
+  font-weight: bold;
+  box-shadow: 0 4px 12px rgba(50,0,20,0.06);
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+.footer-btn:hover {
+  background: #FFD700;
+  color: #800020;
+}
+
+@media (max-width: 600px) {
+  .cover-title {
+    font-size: 2rem;
+  }
+  .cover-subtitle {
+    font-size: 1rem;
+    padding: 0 10px;
+  }
+  .cover-buttons {
+    flex-direction: column;
+    gap: 16px;
+  }
+  .explore-btn, .join-btn {
+    width: 100%;
+  }
+}

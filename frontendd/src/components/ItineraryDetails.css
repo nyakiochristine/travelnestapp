@@ -1,0 +1,207 @@
+.itinerary-details {
+  max-width: 960px;
+  margin: 2.5rem auto 2rem auto;
+  padding: 0 1rem 2rem 1rem;
+  font-family: "Nunito", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  color: #122b54;
+}
+
+/* Header */
+
+.itinerary-details-header {
+  background: #ffffff;
+  border-radius: 18px;
+  box-shadow: 0 2px 18px rgba(26, 35, 126, 0.12);
+  border: 1px solid #dde5f5;
+  overflow: hidden;
+  margin-bottom: 1.8rem;
+}
+
+.details-cover {
+  width: 100%;
+  max-height: 260px;
+  object-fit: cover;
+  display: block;
+}
+
+.details-heading {
+  padding: 1.1rem 1.3rem 1.2rem 1.3rem;
+}
+
+.details-heading h1 {
+  margin: 0 0 0.35rem 0;
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #0b4f6c;
+}
+
+.details-dates {
+  margin: 0;
+  font-size: 0.95rem;
+  color: #6a7590;
+}
+
+.details-owner {
+  margin: 0.25rem 0 0 0;
+  font-size: 0.95rem;
+  color: #3f4c6b;
+}
+
+/* Places list */
+
+.details-places {
+  margin-top: 0.5rem;
+}
+
+.details-place-card {
+  background: #f7f9ff;
+  border-radius: 16px;
+  border: 1px solid #d9e3f7;
+  box-shadow: 0 1px 10px rgba(54, 79, 148, 0.12);
+  margin-bottom: 1.3rem;
+  padding: 0.9rem 0.9rem 0.95rem 0.9rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+/* Place images */
+
+.details-place-images {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+}
+
+.details-place-images img {
+  width: 130px;
+  height: 95px;
+  border-radius: 10px;
+  object-fit: cover;
+  box-shadow: 0 1px 6px rgba(15, 57, 118, 0.45);
+}
+
+/* Place main info */
+
+.details-place-main {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.details-place-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.details-place-header h2 {
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #324a9b;
+}
+
+.details-place-date {
+  font-size: 0.9rem;
+  color: #8c95af;
+}
+
+/* Activities */
+
+.details-activities {
+  list-style: none;
+  padding-left: 0;
+  margin: 0.15rem 0 0.25rem 0;
+  font-size: 0.93rem;
+}
+
+.details-activities li {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.12rem;
+  color: #3f4c6b;
+}
+
+.details-activities .act-name {
+  font-weight: 500;
+  max-width: 70%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.details-activities .act-cost {
+  color: #1f7a4d;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+/* Notes */
+
+.details-notes {
+  margin: 0.15rem 0 0.25rem 0;
+  font-size: 0.9rem;
+  color: #5b5436;
+  font-style: italic;
+}
+
+/* Links */
+
+.details-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.details-links a {
+  font-size: 0.88rem;
+  color: #1546a0;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(21, 70, 160, 0.3);
+  padding-bottom: 1px;
+  transition: color 0.18s ease, border-color 0.18s ease;
+}
+
+.details-links a:hover {
+  color: #0c2f6e;
+  border-color: rgba(12, 47, 110, 0.7);
+}
+
+/* Generic states */
+
+.loading,
+.error,
+.login-message {
+  text-align: center;
+  margin-top: 2rem;
+  font-size: 0.98rem;
+  color: #54627a;
+}
+
+.error {
+  color: #b00020;
+}
+
+/* Responsive */
+
+@media (max-width: 720px) {
+  .itinerary-details {
+    padding: 0 0.8rem 2rem 0.8rem;
+  }
+
+  .details-cover {
+    max-height: 220px;
+  }
+
+  .details-place-images img {
+    width: 100px;
+    height: 80px;
+  }
+
+  .details-place-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.05rem;
+  }
+}

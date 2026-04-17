@@ -1,0 +1,105 @@
+.social-actions {
+  margin-top: 1rem;
+  border-top: 1px solid #e8eaf6;
+  padding-top: 1rem;
+  font-family: 'Nunito', sans-serif;
+}
+
+.social-actions button {
+  background: #1976d2;
+  border: none;
+  color: white;
+  border-radius: 18px;
+  padding: 0.5rem 1rem;
+  margin-right: 0.8rem;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.15s ease;
+}
+
+.social-actions button.liked {
+  background: #d32f2f;
+}
+
+.social-actions button:hover:not([disabled]) {
+  background-color: #145ea2;
+  transform: translateY(-2px);
+}
+
+.social-actions button:disabled {
+  background-color: #b0b5c1;
+  cursor: not-allowed;
+  color: #f0f0f0;
+  transform: none;
+}
+
+.comment-form {
+  margin-top: 1.1rem;
+  display: flex;
+  gap: 0.45rem;
+}
+
+.comment-form input {
+  flex: 1;
+  padding: 0.5rem;
+  border-radius: 16px;
+  border: 1px solid #b8c8e0;
+  background-color: #f4f8ff;
+  font-size: 0.95rem;
+}
+
+.comment-form input:focus {
+  outline-color: #1976d2;
+  background-color: #e7f2fc;
+}
+
+.comment-form button {
+  padding: 0 1.5rem;
+  border-radius: 16px;
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+.comments-list {
+  margin-top: 1rem;
+  max-height: 160px;
+  overflow-y: auto;
+  font-size: 0.9rem;
+  color: #344054;
+}
+
+.comment-item {
+  padding: 0.35rem 0;
+  border-bottom: 1px solid #edf2f7;
+}
+
+.comment-item strong {
+  margin-right: 0.5rem;
+  color: #1e293b;
+}
+
+.rating-section {
+  margin-top: 1em;
+  font-size: 1.2rem;
+  color: #fbc02d;
+  user-select: none;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.rating-section .star {
+  cursor: pointer;
+  transition: color 0.15s ease;
+}
+
+.rating-section .star.selected {
+  color: #ffa000;
+}
+
+.rating-section span {
+  font-size: 0.875rem;
+  color: #374151;
+  margin-left: 0.5rem;
+}
