@@ -14,6 +14,8 @@ function Messages() {
   const [text, setText] = useState('');
   const [travelers, setTravelers] = useState([]);
   const [showNewMessage, setShowNewMessage] = useState(false);
+  const [travelerQuery, setTravelerQuery] = useState('');
+  const [error, setError] = useState('');
 
   useEffect(() => {
     if (!token) return;
@@ -24,6 +26,15 @@ function Messages() {
       .then(data => setConversations(Array.isArray(data) ? data : []))
       .catch(console.error);
   }, [token]);
+
+  useEffect(() => {
+    if (!token || !activeConvo) return;
+    const timer = setInterval(async () => {
+      const response = await fetch(`http://localhost:3001/api/chat/${activeConvo._id}/messages`, { headers: { Authorization: `Bearer ${token}` } });
+      if (response.ok) setMessages(await response.json());
+    }, 8000);
+    return () => clearInterval(timer);
+  }, [token, activeConvo]);
 
   useEffect(() => {
     if (!token) return;
@@ -39,12 +50,12 @@ function Messages() {
         method: 'POST',
         headers: { Authorization: `Bearer ${token}` }
       });
-      if (!response.ok) return;
+      if (!response.ok) throw new Error('Could not start this conversation.');
       const conversation = await response.json();
       setConversations(previous => previous.some(item => item._id === conversation._id) ? previous : [conversation, ...previous]);
       setShowNewMessage(false);
       loadMessages(conversation);
-    } catch (error) { console.error(error); }
+    } catch (error) { setError(error.message); }
   };
 
   const loadMessages = async (convo) => {
@@ -67,6 +78,7 @@ function Messages() {
     e.preventDefault();
     if (!activeConvo || !text.trim()) return;
 
+    setError('');
     const res = await fetch(
       `http://localhost:3001/api/chat/${activeConvo._id}/messages`,
       {
@@ -82,7 +94,8 @@ function Messages() {
       const msg = await res.json();
       setMessages(prev => [...prev, msg]);
       setText('');
-    }
+      setConversations(previous => previous.map(conversation => conversation._id === activeConvo._id ? { ...conversation, latestMessage: msg, updatedAt: new Date().toISOString() } : conversation).sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt)));
+    } else setError('Your message could not be sent. Please try again.');
   };
 
   if (!token) {
@@ -101,7 +114,8 @@ function Messages() {
         {showNewMessage && (
           <div className="traveler-picker">
             <p>Start a conversation</p>
-            {travelers.length ? travelers.map(traveler => <button key={traveler._id} onClick={() => startConversation(traveler)}>{traveler.name}</button>) : <span>No other travellers yet.</span>}
+            <input value={travelerQuery} onChange={event => setTravelerQuery(event.target.value)} placeholder="Search travellers…" />
+            {travelers.filter(traveler => traveler.name.toLowerCase().includes(travelerQuery.toLowerCase())).length ? travelers.filter(traveler => traveler.name.toLowerCase().includes(travelerQuery.toLowerCase())).map(traveler => <button key={traveler._id} onClick={() => startConversation(traveler)}><img src={traveler.profilePicture ? `http://localhost:3001${traveler.profilePicture}` : '/default-avatar.png'} alt="" />{traveler.name}</button>) : <span>No other travellers yet.</span>}
           </div>
         )}
         {conversations.map(c => {
@@ -122,8 +136,7 @@ function Messages() {
                   : 'convo-item'
               }
               onClick={() => loadMessages(c)}
-            >
-              {label}
+            ><span className="conversation-avatar">{c.type === 'group' ? '✦' : label.charAt(0)}</span><span className="conversation-copy"><strong>{label}</strong><small>{c.latestMessage?.itinerary?.title ? `Shared: ${c.latestMessage.itinerary.title}` : c.latestMessage?.text || 'Start planning together'}</small></span>
             </button>
           );
         })}
@@ -136,7 +149,7 @@ function Messages() {
               <h3>
                 {activeConvo.type === 'group'
                   ? activeConvo.name
-                  : 'Conversation'}
+                  : ((activeConvo.members || []).find(member => member._id !== user.user._id)?.name || 'Conversation')}
               </h3>
             </div>
 
@@ -206,6 +219,7 @@ function Messages() {
             <div><strong>Your travel conversations live here.</strong><br />Choose a chat or start a new one to share plans, tips and routes.</div>
           </div>
         )}
+        {error && <div className="chat-error">{error}</div>}
       </section>
     </div>
   );

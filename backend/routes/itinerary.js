@@ -91,6 +91,26 @@ router.post('/', verifyToken, upload.any(), async (req, res) => {
   } catch (error) { res.status(400).json({ error: error.message || 'Failed to create itinerary' }); }
 });
 
+router.post('/:id/copy', verifyToken, async (req, res) => {
+  try {
+    const source = await Itinerary.findById(req.params.id);
+    if (!source) return res.status(404).json({ error: 'Itinerary not found' });
+    const copy = await Itinerary.create({
+      user: req.userId,
+      title: `${source.title} (my version)`,
+      description: source.description,
+      tripStart: source.tripStart,
+      tripEnd: source.tripEnd,
+      budget: source.budget,
+      currency: source.currency,
+      tripCoverImage: source.tripCoverImage,
+      places: source.places.map(place => place.toObject ? place.toObject() : place),
+      isPublic: false
+    });
+    res.status(201).json(copy);
+  } catch (error) { res.status(400).json({ error: error.message || 'Failed to copy itinerary' }); }
+});
+
 router.post('/:id/like', verifyToken, async (req, res) => {
   const itinerary = await Itinerary.findById(req.params.id);
   if (!itinerary) return res.status(404).json({ error: 'Not found' });

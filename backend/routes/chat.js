@@ -5,7 +5,7 @@ const mongoose = require('mongoose');
 const { verifyToken } = require('../middleware/authMiddleware');
 const Conversation = require('../models/Conversation');  // ✅ singular
 const Message = require('../models/Message');
-// const User = require('../models/User'); // only needed if you enforce follow check
+const User = require('../models/User');
 
 /* 2.1 Create or get direct conversation between two users */
 router.post('/direct/:otherUserId', verifyToken, async (req, res) => {
@@ -18,6 +18,9 @@ router.post('/direct/:otherUserId', verifyToken, async (req, res) => {
     }
     if (userId === otherId) {
       return res.status(400).json({ error: 'Cannot chat with yourself' });
+    }
+    if (!await User.exists({ _id: otherId })) {
+      return res.status(404).json({ error: 'Traveller not found' });
     }
 
     // Optional: only allow DMs to people you follow
@@ -40,6 +43,7 @@ router.post('/direct/:otherUserId', verifyToken, async (req, res) => {
       });
     }
 
+    await convo.populate('members', 'name profilePicture');
     res.json(convo);
   } catch (err) {
     console.error('direct convo error:', err);
@@ -81,9 +85,19 @@ router.get('/my', verifyToken, async (req, res) => {
       members: { $in: [req.userId] }
     })
       .populate('members', 'name profilePicture')
-      .sort({ updatedAt: -1 });
+      .sort({ updatedAt: -1 })
+      .lean();
 
-    res.json(convos);
+    const withLatestMessages = await Promise.all(convos.map(async convo => ({
+      ...convo,
+      latestMessage: await Message.findOne({ conversation: convo._id })
+        .sort({ createdAt: -1 })
+        .populate('sender', 'name')
+        .populate('itinerary', 'title')
+        .lean()
+    })));
+
+    res.json(withLatestMessages);
   } catch (err) {
     console.error('get my convos error:', err);
     res.status(500).json({ error: 'Server error' });
@@ -110,10 +124,13 @@ router.post('/:conversationId/messages', verifyToken, async (req, res) => {
       return res.status(403).json({ error: 'Not a member of this conversation' });
     }
 
+    if (!text?.trim() && !itineraryId) {
+      return res.status(400).json({ error: 'Write a message or share an itinerary' });
+    }
     const message = await Message.create({
       conversation: convoId,
       sender: req.userId,
-      text: text || '',
+      text: text?.trim() || '',
       itinerary: itineraryId || null
     });
 

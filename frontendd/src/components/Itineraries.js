@@ -1,264 +1,77 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useCallback, useEffect, useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { AuthContext } from './AuthContext';
-import html2pdf from 'html2pdf.js';
 import Search from './Search';
 import './Itineraries.css';
 
-function formatDate(dateString) {
-  if (!dateString) return '';
-  const d = new Date(dateString);
-  if (Number.isNaN(d.getTime())) return '';
-  return d.toLocaleDateString();
-}
+const API = 'http://localhost:3001/api';
+const formatDate = value => value ? new Date(value).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }) : '';
 
 function Itineraries() {
   const { user } = useContext(AuthContext);
+  const token = user?.token;
   const [itineraries, setItineraries] = useState([]);
   const [filteredItineraries, setFilteredItineraries] = useState([]);
   const [activeCommentId, setActiveCommentId] = useState(null);
   const [commentText, setCommentText] = useState('');
-  const [shareOpen, setShareOpen] = useState(false);
   const [shareItinerary, setShareItinerary] = useState(null);
-  const [followers, setFollowers] = useState([]);
+  const [travelers, setTravelers] = useState([]);
   const [selectedTargets, setSelectedTargets] = useState([]);
+  const [notice, setNotice] = useState('');
 
-  const token = user?.token;
+  const updateTrip = (id, change) => {
+    const apply = list => list.map(item => item._id === id ? (typeof change === 'function' ? change(item) : { ...item, ...change }) : item);
+    setItineraries(apply); setFilteredItineraries(apply);
+  };
+  const loadFeed = useCallback(async () => {
+    const response = await fetch(`${API}/itineraries`, { headers: { Authorization: `Bearer ${token}` } });
+    const data = response.ok ? await response.json() : [];
+    setItineraries(Array.isArray(data) ? data : []);
+    setFilteredItineraries(Array.isArray(data) ? data : []);
+  }, [token]);
 
+  useEffect(() => { if (token) loadFeed().catch(console.error); }, [token, loadFeed]);
   useEffect(() => {
-    if (!user || !user.token) return;
+    if (!token) return;
+    fetch(`${API}/users`, { headers: { Authorization: `Bearer ${token}` } }).then(r => r.ok ? r.json() : []).then(data => setTravelers(Array.isArray(data) ? data.filter(person => person._id !== user.user?._id) : [])).catch(console.error);
+  }, [token, user?.user?._id]);
 
-    fetch('http://localhost:3001/api/itineraries', {
-      headers: { Authorization: `Bearer ${user.token}` },
-    })
-      .then(res => res.json())
-      .then(data => {
-        const list = Array.isArray(data) ? data : [];
-        setItineraries(list);
-        setFilteredItineraries(list);
-      })
-      .catch(err => console.error('Fetch Feed Error:', err));
-  }, [user]);
-
-  const updateItineraries = (itineraryId, updateFn) => {
-    const applyUpdate = prev => prev.map(it => 
-      it._id === itineraryId 
-        ? (typeof updateFn === 'function' ? updateFn(it) : { ...it, ...updateFn })
-        : it
-    );
-    setItineraries(applyUpdate);
-    setFilteredItineraries(applyUpdate);
+  const request = async (url, options = {}) => {
+    const response = await fetch(`${API}${url}`, { ...options, headers: { Authorization: `Bearer ${token}`, ...(options.headers || {}) } });
+    if (!response.ok) throw new Error((await response.json().catch(() => ({}))).error || 'Something went wrong');
+    return response.json();
   };
-
-  const handleLike = async (itineraryId) => {
-    try {
-      const response = await fetch(`http://localhost:3001/api/itineraries/${itineraryId}/like`, {
-        method: 'POST',
-        headers: { 
-          Authorization: `Bearer ${user.token}`,
-          'Content-Type': 'application/json'
-        }
-      });
-      const result = await response.json();
-      updateItineraries(itineraryId, { likes: result.likes, liked: result.liked });
-    } catch (err) {
-      console.error('Like error:', err);
-    }
+  const like = async id => { try { const result = await request(`/itineraries/${id}/like`, { method: 'POST' }); updateTrip(id, { likes: result.likes }); } catch (error) { setNotice(error.message); } };
+  const save = async id => {
+    try { const result = await request(`/itineraries/${id}/save`, { method: 'POST' }); const me = user.user._id; updateTrip(id, item => ({ ...item, savedBy: result.saved ? [...(item.savedBy || []), me] : (item.savedBy || []).filter(value => value.toString() !== me) })); } catch (error) { setNotice(error.message); }
   };
-
-  const handleSave = async (itineraryId) => {
-    try {
-      const response = await fetch(`http://localhost:3001/api/itineraries/${itineraryId}/save`, {
-        method: 'POST',
-        headers: { Authorization: `Bearer ${user.token}` }
-      });
-      const result = await response.json();
-      const currentUserId = user.user?._id?.toString();
-
-      updateItineraries(itineraryId, (it) => {
-        const currentIds = Array.isArray(it.savedBy) ? it.savedBy : [];
-        if (result.saved) {
-          return { ...it, savedBy: [...currentIds, currentUserId] };
-        } else {
-          return { ...it, savedBy: currentIds.filter(id => id.toString() !== currentUserId) };
-        }
-      });
-    } catch (err) {
-      console.error('Save error:', err);
-    }
-  };
-
-  const handleAddComment = async (itineraryId) => {
+  const copy = async id => { try { const trip = await request(`/itineraries/${id}/copy`, { method: 'POST' }); setNotice(`Saved “${trip.title}” to your journeys. You can edit it from Dashboard.`); } catch (error) { setNotice(error.message); } };
+  const comment = async id => {
     if (!commentText.trim()) return;
-    try {
-      const res = await fetch(`http://localhost:3001/api/itineraries/${itineraryId}/comments`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${user.token}`,
-        },
-        body: JSON.stringify({ text: commentText.trim() }),
-      });
-      if (res.ok) {
-        const newComment = await res.json();
-        updateItineraries(itineraryId, (it) => ({
-          ...it, 
-          comments: [...(it.comments || []), newComment]
-        }));
-        setCommentText('');
-      }
-    } catch (err) {
-      console.error('Comment error:', err);
-    }
+    try { const entry = await request(`/itineraries/${id}/comments`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ text: commentText.trim() }) }); updateTrip(id, item => ({ ...item, comments: [...(item.comments || []), entry] })); setCommentText(''); } catch (error) { setNotice(error.message); }
   };
-
-  const openShareModal = async (itinerary) => {
-    setShareItinerary(itinerary);
-    setShareOpen(true);
-    setSelectedTargets([]);
-    try {
-      const res = await fetch('http://localhost:3001/api/users/me', {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      if (res.ok) {
-        const me = await res.json();
-        setFollowers(me.followers || []);
-      }
-    } catch (e) {
-      console.error('load followers error', e);
-    }
+  const share = async () => {
+    if (!selectedTargets.length) return setNotice('Choose at least one traveller to share with.');
+    try { await request('/chat/share-itinerary', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ targetUserIds: selectedTargets, itineraryId: shareItinerary._id, text: `Thought you would like this route: ${shareItinerary.title}` }) }); setShareItinerary(null); setNotice('Itinerary shared in chat.'); } catch (error) { setNotice(error.message); }
   };
-
-  const handleShareToFollowers = async () => {
-    if (!shareItinerary || selectedTargets.length === 0) return;
-    try {
-      const res = await fetch('http://localhost:3001/api/chat/share-itinerary', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`
-        },
-        body: JSON.stringify({
-          targetUserIds: selectedTargets,
-          itineraryId: shareItinerary._id
-        })
-      });
-      if (res.ok) {
-        setShareOpen(false);
-        setShareItinerary(null);
-      }
-    } catch (e) {
-      console.error('share itinerary error', e);
-    }
-  };
-
-  const handleDownload = (itinerary) => {
-    const element = document.createElement('div');
-    element.innerHTML = `<div style="padding: 20px;"><h1>${itinerary.title}</h1></div>`; // Simplified for example
-    html2pdf().from(element).save(`${itinerary.title}.pdf`);
-  };
-
-  const handleShareLink = (id, title) => {
-      const url = `${window.location.origin}/itineraries/${id}`;
-      navigator.clipboard.writeText(url).then(() => alert('Link copied!'));
-  };
-
-  const toggleTarget = (id) => {
-    setSelectedTargets(prev => prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]);
-  };
-
-  if (!user) {
-    return <p className="login-message">Please log in to explore itineraries.</p>;
-  }
-
-  // ADDED: The missing 'return' keyword
-  return (
-    <div className="itineraries-feed">
-      <Search 
-        itineraries={itineraries} 
-        setFilteredItineraries={setFilteredItineraries} 
-      />
-      
-      <h2 className="feed-title">Travel Feed</h2>
-
-      {filteredItineraries.length === 0 ? (
-        <p className="empty-message">No itineraries match your filters.</p>
-      ) : (
-        filteredItineraries.map(it => {
-          const userIdStr = user.user?._id?.toString();
-          const hasLiked = it.liked || (Array.isArray(it.likes) && it.likes.map(l => l.toString()).includes(userIdStr));
-          const hasSaved = Array.isArray(it.savedBy) && it.savedBy.some(id => id.toString() === userIdStr);
-
-          return (
-            <article key={it._id} className="feed-card">
-              <div className="feed-header">
-                {it.user && (
-                  <div className="user-header">
-                    <img src={it.user.profilePicture || '/default-avatar.png'} alt={it.user.name} className="user-avatar" />
-                    <Link to={`/profile/${it.user._id}`} className="username">{it.user.name}</Link>
-                  </div>
-                )}
-                <h3 className="itinerary-title">{it.title}</h3>
-              </div>
-              {it.tripCoverImage && (
-                <Link to={`/itineraries/${it._id}`} className="feed-cover-link">
-                  <img className="feed-cover" src={`http://localhost:3001${it.tripCoverImage}`} alt={it.title} />
-                </Link>
-              )}
-              <div className="feed-trip-meta">
-                <span>🧭 {it.places?.length || 0} stops</span>
-                {it.tripStart && <span>{formatDate(it.tripStart)}{it.tripEnd ? ` — ${formatDate(it.tripEnd)}` : ''}</span>}
-                <Link to={`/itineraries/${it._id}`}>View itinerary →</Link>
-              </div>
-              {it.description && <p className="feed-summary">{it.description}</p>}
-
-              <div className="feed-actions">
-                <button onClick={() => handleLike(it._id)} className={`feed-btn ${hasLiked ? 'liked' : ''}`}>
-                  ❤️ {Array.isArray(it.likes) ? it.likes.length : 0} Likes
-                </button>
-                <button onClick={() => setActiveCommentId(activeCommentId === it._id ? null : it._id)} className="feed-btn">
-                  💬 {it.comments?.length || 0} Comments
-                </button>
-                <button onClick={() => openShareModal(it)} className="feed-btn">💬 Share to chat</button>
-                <button onClick={() => handleSave(it._id)} className={`feed-btn ${hasSaved ? 'saved' : ''}`}>
-                   ⭐ {hasSaved ? 'Saved' : 'Save'}
-                </button>
-              </div>
-
-              {activeCommentId === it._id && (
-                <div className="comments-section">
-                  <div className="comment-input-row">
-                    <input type="text" value={commentText} onChange={(e) => setCommentText(e.target.value)} placeholder="Add a comment..." />
-                    <button onClick={() => handleAddComment(it._id)}>Post</button>
-                  </div>
-                  <div className="comments-list">
-                    {(it.comments || []).map((c, idx) => (
-                      <div key={c._id || idx} className="comment-item">
-                        <strong>{c.user?.name || 'Traveler'}: </strong>{c.text}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </article>
-          );
-        })
-      )}
-
-      {shareOpen && (
-        <div className="share-modal-overlay">
-          <div className="share-modal">
-            <h3>Share to Followers</h3>
-            {followers.map(f => (
-              <div key={f._id}><input type="checkbox" onChange={() => toggleTarget(f._id)} /> {f.name}</div>
-            ))}
-            <button onClick={handleShareToFollowers}>Share</button>
-            <button onClick={() => setShareOpen(false)}>Cancel</button>
-          </div>
-        </div>
-      )}
-    </div>
-  );
+  if (!user) return <p className="login-message">Please log in to explore itineraries.</p>;
+  return <main className="itineraries-feed">
+    <header className="feed-intro"><div><span className="section-kicker">TravelNest community</span><h1>Find your next great route</h1><p>Real itineraries, thoughtful notes and places worth going out of your way for.</p></div><Link className="feed-create-link" to="/create">＋ Create a trip</Link></header>
+    <Search itineraries={itineraries} setFilteredItineraries={setFilteredItineraries} />
+    {notice && <div className="feed-notice">{notice}<button onClick={() => setNotice('')}>×</button></div>}
+    {filteredItineraries.length === 0 ? <p className="empty-message">No itineraries match your filters yet.</p> : <section className="feed-list">{filteredItineraries.map(itinerary => {
+      const me = user.user?._id;
+      const liked = itinerary.likes?.some(id => id.toString() === me);
+      const saved = itinerary.savedBy?.some(id => id.toString() === me);
+      return <article className="feed-card social-trip-card" key={itinerary._id}>
+        <header className="trip-author"><Link to={`/profile/${itinerary.user?._id}`}><img src={itinerary.user?.profilePicture ? `http://localhost:3001${itinerary.user.profilePicture}` : '/default-avatar.png'} alt="" /><span><strong>{itinerary.user?.name || 'TravelNest traveller'}</strong><small>shared a route</small></span></Link><span className="trip-date">{formatDate(itinerary.createdAt)}</span></header>
+        <Link className="trip-content-link" to={`/itineraries/${itinerary._id}`}>{itinerary.tripCoverImage && <img className="feed-cover" src={`http://localhost:3001${itinerary.tripCoverImage}`} alt={itinerary.title} />}<div className="trip-content"><h2>{itinerary.title}</h2>{itinerary.description && <p>{itinerary.description}</p>}<div className="trip-stats"><span>🧭 {itinerary.places?.length || 0} stops</span>{itinerary.tripStart && <span>📅 {formatDate(itinerary.tripStart)}{itinerary.tripEnd && ` – ${formatDate(itinerary.tripEnd)}`}</span>}</div>{itinerary.places?.length > 0 && <div className="place-pills">{itinerary.places.slice(0, 3).map((place, index) => <span key={`${place.name}-${index}`}>{place.name}</span>)}{itinerary.places.length > 3 && <span>+{itinerary.places.length - 3} more</span>}</div>}</div></Link>
+        <div className="social-counts"><span>{itinerary.likes?.length || 0} likes</span><span>{itinerary.comments?.length || 0} comments</span><span>{itinerary.savedBy?.length || 0} saves</span></div>
+        <div className="feed-actions"><button onClick={() => like(itinerary._id)} className={liked ? 'feed-btn is-active' : 'feed-btn'}>{liked ? '♥ Liked' : '♡ Like'}</button><button onClick={() => setActiveCommentId(activeCommentId === itinerary._id ? null : itinerary._id)} className="feed-btn">◌ Comment</button><button onClick={() => { setShareItinerary(itinerary); setSelectedTargets([]); }} className="feed-btn">↗ Share</button><button onClick={() => save(itinerary._id)} className={saved ? 'feed-btn is-active' : 'feed-btn'}>☆ {saved ? 'Saved' : 'Save'}</button><button onClick={() => copy(itinerary._id)} className="feed-btn">⎘ Make mine</button></div>
+        {activeCommentId === itinerary._id && <section className="comments-section"><div className="comments-list">{(itinerary.comments || []).map(commentEntry => <p className="comment-item" key={commentEntry._id}><Link to={`/profile/${commentEntry.user?._id}`}>{commentEntry.user?.name || 'Traveller'}</Link> {commentEntry.text}</p>)}</div><div className="comment-input-row"><input value={commentText} onChange={event => setCommentText(event.target.value)} onKeyDown={event => event.key === 'Enter' && comment(itinerary._id)} placeholder="Add a helpful travel note…" /><button onClick={() => comment(itinerary._id)}>Post</button></div></section>}
+      </article>;
+    })}</section>}
+    {shareItinerary && <div className="share-modal-overlay" role="dialog" aria-modal="true"><div className="share-modal"><button className="modal-close" onClick={() => setShareItinerary(null)}>×</button><span className="section-kicker">Share via message</span><h2>{shareItinerary.title}</h2><p>Choose people to send this itinerary to.</p><div className="share-followers-list">{travelers.length ? travelers.map(traveler => <label key={traveler._id}><input type="checkbox" checked={selectedTargets.includes(traveler._id)} onChange={() => setSelectedTargets(current => current.includes(traveler._id) ? current.filter(id => id !== traveler._id) : [...current, traveler._id])} /><span>{traveler.name}</span></label>) : <span>Add another registered traveller to start sharing routes.</span>}</div><button className="share-confirm-btn" onClick={share}>Send itinerary</button></div></div>}
+  </main>;
 }
-
 export default Itineraries;
