@@ -1,8 +1,8 @@
 :root {
-  --burgundy: #7b001c;
-  --burgundy-dark: #5b0015;
-  --gold: #f6b93b;
-  --nav-bg: #7b001c;
+  --burgundy: #075985;
+  --burgundy-dark: #0c3654;
+  --gold: #f6bd60;
+  --nav-bg: #0c3654;
   --nav-text: #ffffff;
 }
 
@@ -13,8 +13,8 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0.45rem 1.6rem;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25);
+  padding: 0.7rem 4vw;
+  box-shadow: 0 2px 15px rgba(8, 47, 73, 0.22);
   position: sticky;
   top: 0;
   z-index: 50;
@@ -23,7 +23,8 @@
 .nav-brand a {
   color: var(--nav-text);
   font-weight: 800;
-  font-size: 1.25rem;
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 1.45rem;
   text-decoration: none;
 }
 
@@ -48,16 +49,16 @@
 }
 
 .nav-profile-link {
-  background: #fef3c7;
-  color: #92400e;
+  background: #e0f2fe;
+  color: #075985;
 }
 
 /* Logout button */
 
 .logout-btn {
   margin-left: 0.4rem;
-  background: #fef2f2;
-  color: #b91c1c;
+  background: #fff7ed;
+  color: #c95035;
   border: none;
   border-radius: 999px;
   padding: 0.32rem 0.9rem;

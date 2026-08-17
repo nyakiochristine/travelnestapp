@@ -1,13 +1,41 @@
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap');
+
+:root {
+  --ink: #102a43;
+  --ocean: #075985;
+  --ocean-deep: #0c3654;
+  --sky: #e0f2fe;
+  --sand: #fffaf0;
+  --coral: #e76f51;
+  --coral-dark: #c95035;
+  --sun: #f6bd60;
+  --surface: #ffffff;
+  --line: #dbe7ed;
+  --muted: #627d98;
+  --shadow: 0 14px 40px rgba(16, 42, 67, .11);
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--sand); color: var(--ink); font-family: 'DM Sans', system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+button, input, textarea, select { font: inherit; }
+button { cursor: pointer; }
+a { color: inherit; }
+
+.login-message, .empty-message, .loading, .error { max-width: 580px; margin: 4rem auto; padding: 1.25rem; text-align: center; color: var(--muted); background: var(--surface); border: 1px solid var(--line); border-radius: 16px; }
+
+/* Shared surface and interaction polish for application screens. */
+.dashboard-container, .itineraries-feed, .profile-container, .messages-layout, .public-itineraries-container, .itinerary-details { color: var(--ink) !important; }
+.tool-card, .feed-card, .profile-header, .profile-edit-form, .convo-list, .chat-panel, .public-itinerary-card, .itinerary-details, .modal-content {
+  border-color: var(--line) !important; box-shadow: var(--shadow) !important;
 }
+.btn-primary, .btn-secondary, .btn-ml, .btn-login, .btn-register, .follow-btn, .save-profile-btn, .chat-input-row button {
+  background: var(--ocean) !important; color: white !important; box-shadow: 0 8px 16px rgba(7, 89, 133, .2) !important;
+}
+.btn-primary:hover, .btn-secondary:hover, .btn-ml:hover, .btn-login:hover, .btn-register:hover, .follow-btn:hover, .save-profile-btn:hover, .chat-input-row button:hover {
+  background: var(--ocean-deep) !important;
+}
+.feed-title, .section-title, .itinerary-title, .chat-header h3, .convo-list h2 { color: var(--ocean-deep) !important; }
+.tab-navigation button.active, .convo-item.active, .msg-row.own .msg-bubble { background: var(--ocean) !important; }
+.user-avatar, .profile-picture { border-color: var(--sun) !important; }
+.activity-cost { color: var(--coral) !important; }
+@media (max-width: 720px) { .dashboard-container, .itineraries-feed, .profile-container, .messages-layout, .public-itineraries-container, .itinerary-details { margin-top: 1.25rem !important; } }

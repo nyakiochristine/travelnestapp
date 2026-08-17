@@ -24,6 +24,8 @@
   font-weight: 700;
   color: #7b0016;
 }
+.new-message-btn { width: 100%; margin-bottom: .85rem; padding: .65rem .75rem; border: 0; border-radius: 10px; background: #075985; color: white; font-weight: 700; font-size: .9rem; }
+.traveler-picker { margin: 0 0 .8rem; padding: .7rem; border: 1px solid #dbe7ed; border-radius: 10px; background: #f0f9ff; }.traveler-picker p { margin: 0 0 .45rem; font-weight: 700; color: #0c3654; font-size: .84rem; }.traveler-picker button { display: block; width: 100%; padding: .45rem 0; border: 0; background: transparent; color: #075985; text-align: left; font-weight: 600; }.traveler-picker span { color: #627d98; font-size: .84rem; }
 
 .convo-item {
   width: 100%;

@@ -10,7 +10,11 @@ router.post('/generate', verifyToken, async (req, res) => {
         const { title, baseAttractionId } = req.body;
 
         // 1. Refresh clusters
-        await generateClusteredItinerary(4); 
+        const attractionCount = await Attraction.countDocuments();
+        if (attractionCount === 0) {
+            return res.status(400).json({ message: 'Add at least one attraction before generating a plan' });
+        }
+        await generateClusteredItinerary(Math.min(4, attractionCount));
 
         // 2. Find starting point
         const base = await Attraction.findById(baseAttractionId);
@@ -33,7 +37,7 @@ router.post('/generate', verifyToken, async (req, res) => {
 
         const smartPlan = new Itinerary({
             title: title || `Discovery: ${base.location} Region`,
-            user: req.user?._id || req.user?.id || req.body.userId,
+            user: req.userId,
             places: allPlaces, // Now perfectly compatible with your model!
             isAiGenerated: true 
         });

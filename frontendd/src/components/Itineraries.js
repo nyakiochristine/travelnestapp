@@ -200,6 +200,17 @@ function Itineraries() {
                 )}
                 <h3 className="itinerary-title">{it.title}</h3>
               </div>
+              {it.tripCoverImage && (
+                <Link to={`/itineraries/${it._id}`} className="feed-cover-link">
+                  <img className="feed-cover" src={`http://localhost:3001${it.tripCoverImage}`} alt={it.title} />
+                </Link>
+              )}
+              <div className="feed-trip-meta">
+                <span>🧭 {it.places?.length || 0} stops</span>
+                {it.tripStart && <span>{formatDate(it.tripStart)}{it.tripEnd ? ` — ${formatDate(it.tripEnd)}` : ''}</span>}
+                <Link to={`/itineraries/${it._id}`}>View itinerary →</Link>
+              </div>
+              {it.description && <p className="feed-summary">{it.description}</p>}
 
               <div className="feed-actions">
                 <button onClick={() => handleLike(it._id)} className={`feed-btn ${hasLiked ? 'liked' : ''}`}>

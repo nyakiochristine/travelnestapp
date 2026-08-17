@@ -1,16 +1,18 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Link } from 'react-router-dom';
+import { AuthContext } from './AuthContext';
 
 const Profiles = () => {
   const [users, setUsers] = useState([]);
+  const { user } = useContext(AuthContext);
 
   useEffect(() => {
     // Fetch all users from backend
-    fetch('http://localhost:3001/api/users')
+    fetch('http://localhost:3001/api/users', { headers: { Authorization: `Bearer ${user?.token}` } })
       .then(res => res.json())
       .then(setUsers)
       .catch(err => console.error('Profiles fetch error:', err));
-  }, []);
+  }, [user?.token]);
 
   return (
     <div className="profiles-container">

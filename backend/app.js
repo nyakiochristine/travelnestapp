@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
+const fs = require('fs');
 require('dotenv').config();
 
 const connectDB = require('./db');
@@ -19,13 +20,15 @@ const chatRoutes = require('./routes/chat');
 
 
 const app = express();
+const uploadsDir = path.join(__dirname, 'uploads');
+fs.mkdirSync(path.join(uploadsDir, 'profiles'), { recursive: true });
 
 // Enable cross-origin requests
 app.use(cors());
 app.use(express.json());
 
 // Make 'uploads' folder publicly available for image display
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use('/uploads', express.static(uploadsDir));
 
 // Connect to DB only once here
 connectDB();

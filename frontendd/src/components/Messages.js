@@ -12,6 +12,8 @@ function Messages() {
   const [activeConvo, setActiveConvo] = useState(null);
   const [messages, setMessages] = useState([]);
   const [text, setText] = useState('');
+  const [travelers, setTravelers] = useState([]);
+  const [showNewMessage, setShowNewMessage] = useState(false);
 
   useEffect(() => {
     if (!token) return;
@@ -22,6 +24,28 @@ function Messages() {
       .then(data => setConversations(Array.isArray(data) ? data : []))
       .catch(console.error);
   }, [token]);
+
+  useEffect(() => {
+    if (!token) return;
+    fetch('http://localhost:3001/api/users', { headers: { Authorization: `Bearer ${token}` } })
+      .then(response => response.ok ? response.json() : [])
+      .then(data => setTravelers(Array.isArray(data) ? data.filter(person => person._id !== user.user?._id) : []))
+      .catch(console.error);
+  }, [token, user.user?._id]);
+
+  const startConversation = async (traveler) => {
+    try {
+      const response = await fetch(`http://localhost:3001/api/chat/direct/${traveler._id}`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      if (!response.ok) return;
+      const conversation = await response.json();
+      setConversations(previous => previous.some(item => item._id === conversation._id) ? previous : [conversation, ...previous]);
+      setShowNewMessage(false);
+      loadMessages(conversation);
+    } catch (error) { console.error(error); }
+  };
 
   const loadMessages = async (convo) => {
     setActiveConvo(convo);
@@ -73,6 +97,13 @@ function Messages() {
     <div className="messages-layout">
       <aside className="convo-list">
         <h2>Messages</h2>
+        <button className="new-message-btn" onClick={() => setShowNewMessage(value => !value)}>＋ New message</button>
+        {showNewMessage && (
+          <div className="traveler-picker">
+            <p>Start a conversation</p>
+            {travelers.length ? travelers.map(traveler => <button key={traveler._id} onClick={() => startConversation(traveler)}>{traveler.name}</button>) : <span>No other travellers yet.</span>}
+          </div>
+        )}
         {conversations.map(c => {
           const others = (c.members || []).filter(
             m => m._id !== user.user._id
@@ -172,7 +203,7 @@ function Messages() {
           </>
         ) : (
           <div className="chat-empty">
-            Select a conversation to start chatting.
+            <div><strong>Your travel conversations live here.</strong><br />Choose a chat or start a new one to share plans, tips and routes.</div>
           </div>
         )}
       </section>

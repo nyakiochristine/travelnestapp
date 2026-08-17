@@ -45,7 +45,7 @@
   border-radius: 18px;
   border: 1px solid var(--card-border);
   box-shadow: 0 8px 32px rgba(65, 19, 32, 0.14);
-  padding: 1.15rem 1.2rem 1rem 1.2rem;
+  padding: 1.35rem;
   margin-bottom: 2rem;
   transition: box-shadow 0.22s ease, transform 0.12s ease;
 }
@@ -95,8 +95,12 @@
   max-height: 260px;
   border-radius: 14px;
   object-fit: cover;
-  box-shadow: 0 3px 18px rgba(40, 13, 23, 0.7);
+  margin-top: .2rem;
+  box-shadow: 0 10px 24px rgba(12, 54, 84, .2);
 }
+.feed-cover-link { display: block; }
+.feed-trip-meta { display: flex; align-items: center; flex-wrap: wrap; gap: .65rem 1rem; margin-top: .85rem; color: #627d98; font-size: .96rem; }
+.feed-trip-meta a { margin-left: auto; color: #075985; font-weight: 700; text-decoration: none; }
 
 /* title + dates */
 .feed-heading-text {
@@ -407,18 +411,18 @@
 /* Global save button styling – overrides older blue versions */
 .feed-btn.save-btn,
 .save-btn {
-  background: #7b001c;        /* burgundy */
+  background: #075985;
   color: #ffffff;
 }
 
 .feed-btn.save-btn:hover,
 .save-btn:hover {
-  background: #5b0015;       
+  background: #0c3654;
 }
 
 
 .save-btn.saved {
-  background: #7b001c;
+  background: #075985;
   color: #ffffff;
 }
 
@@ -511,4 +515,3 @@
   opacity: 0.6;
   cursor: default;
 }
-

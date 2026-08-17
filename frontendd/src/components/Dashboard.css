@@ -1,11 +1,11 @@
 :root {
-  --burgundy: #7b001c;
-  --burgundy-dark: #5b0015;
-  --burgundy-soft: #fff3f6;
-  --border-soft: #e6dde6;
-  --text-main: #1c2233;
-  --text-muted: #6b7280;
-  --gold: #f6b93b;
+  --burgundy: #075985;
+  --burgundy-dark: #0c3654;
+  --burgundy-soft: #e0f2fe;
+  --border-soft: #dbe7ed;
+  --text-main: #102a43;
+  --text-muted: #627d98;
+  --gold: #f6bd60;
 }
 
 .dashboard-container {
@@ -14,6 +14,11 @@
   padding: 0 1.2rem;
   font-family: "Nunito", sans-serif;
 }
+
+.dashboard-header { padding: 2.2rem 0 1.4rem; text-align: center; }
+.dashboard-title { margin: 0; font-family: 'Playfair Display', Georgia, serif; font-size: clamp(2.3rem, 5vw, 3.5rem); letter-spacing: -.045em; }
+.dashboard-title .travel { color: var(--ocean-deep); }.dashboard-title .nest { color: var(--coral); margin-left: .12em; }
+.dashboard-header p { color: var(--text-muted); margin: .55rem 0 0; }
 
 /* Tabs */
 .tab-navigation {
@@ -34,7 +39,7 @@
 }
 
 .tab-navigation button.active {
-  background: var(--burgundy);
+  background: var(--ocean);
   color: white;
   box-shadow: 0 4px 15px rgba(123, 0, 28, 0.3);
 }

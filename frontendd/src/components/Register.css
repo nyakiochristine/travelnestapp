@@ -1,12 +1,12 @@
 .register-container {
   min-height: 100vh;
-  background-color: #fff8f0;
+  background: linear-gradient(135deg, #e0f2fe, #fffaf0 58%, #fef3c7);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   padding: 40px 20px;
-  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-family: 'DM Sans', sans-serif;
 }
 
 .logo {
@@ -17,11 +17,11 @@
 }
 
 .travel {
-  color: #131313;
+  color: #0c3654;
 }
 
 .nest {
-  color: #800020;
+  color: #e76f51;
   margin-left: 8px;
 }
 
@@ -32,7 +32,7 @@
   background: white;
   padding: 32px;
   border-radius: 18px;
-  box-shadow: 0 14px 35px rgba(168, 50, 74, 0.16);
+  box-shadow: 0 14px 35px rgba(12, 54, 84, 0.16);
 }
 
 .input-field {
@@ -46,7 +46,7 @@
 }
 
 .input-field:focus {
-  border-color: #a8324a;
+  border-color: #075985;
   outline: none;
 }
 
@@ -54,14 +54,14 @@
   padding: 16px 0;
   font-size: 1.2rem;
   font-weight: 700;
-  background-color: #800020;
+  background-color: #075985;
   border: none;
   border-radius: 14px;
-  color: #fff8f0;
+  color: #ffffff;
   cursor: pointer;
   transition: background-color 0.3s ease;
 }
 
 .btn-register:hover {
-  background-color: #a8324a;
+  background-color: #0c3654;
 }
