@@ -2,6 +2,7 @@ const express = require('express');
 const multer = require('multer');
 const path = require('path');
 const Itinerary = require('../models/Itinerary');
+const Notification = require('../models/Notification');
 const { verifyToken } = require('../middleware/authMiddleware');
 
 const router = express.Router();
@@ -69,6 +70,12 @@ router.get('/saved', verifyToken, async (req, res) => {
   } catch (error) { res.status(500).json({ error: 'Failed to fetch saved itineraries' }); }
 });
 
+router.get('/by-user/:userId', verifyToken, async (req, res) => {
+  try {
+    res.json(await populated(Itinerary.find({ user: req.params.userId, isPublic: true }).sort({ createdAt: -1 })));
+  } catch (error) { res.status(500).json({ error: 'Failed to fetch traveller itineraries' }); }
+});
+
 router.get('/', verifyToken, async (_req, res) => {
   try {
     res.json(await populated(Itinerary.find().sort({ createdAt: -1 })));
@@ -118,6 +125,9 @@ router.post('/:id/like', verifyToken, async (req, res) => {
   const liked = index === -1;
   if (liked) itinerary.likes.push(req.userId); else itinerary.likes.splice(index, 1);
   await itinerary.save();
+  if (liked && itinerary.user.toString() !== req.userId) {
+    await Notification.create({ recipient: itinerary.user, actor: req.userId, type: 'like', itinerary: itinerary._id });
+  }
   res.json({ liked, likes: itinerary.likes, likesCount: itinerary.likes.length });
 });
 
@@ -128,6 +138,9 @@ router.post('/:id/save', verifyToken, async (req, res) => {
   const saved = index === -1;
   if (saved) itinerary.savedBy.push(req.userId); else itinerary.savedBy.splice(index, 1);
   await itinerary.save();
+  if (saved && itinerary.user.toString() !== req.userId) {
+    await Notification.create({ recipient: itinerary.user, actor: req.userId, type: 'save', itinerary: itinerary._id });
+  }
   res.json({ saved });
 });
 
@@ -138,6 +151,9 @@ router.post('/:id/comments', verifyToken, async (req, res) => {
   if (!itinerary) return res.status(404).json({ error: 'Not found' });
   itinerary.comments.push({ user: req.userId, text });
   await itinerary.save();
+  if (itinerary.user.toString() !== req.userId) {
+    await Notification.create({ recipient: itinerary.user, actor: req.userId, type: 'comment', itinerary: itinerary._id });
+  }
   await itinerary.populate('comments.user', 'name profilePicture');
   res.status(201).json(itinerary.comments.at(-1));
 });
