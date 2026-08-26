@@ -1,18 +1,18 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap');
 
 :root {
-  --ink: #102a43;
-  --ocean: #075985;
-  --ocean-deep: #0c3654;
-  --sky: #e0f2fe;
-  --sand: #fffaf0;
-  --coral: #e76f51;
-  --coral-dark: #c95035;
-  --sun: #f6bd60;
+  --ink: #153b3a;
+  --ocean: #007c78;
+  --ocean-deep: #005d5a;
+  --sky: #d9f4ef;
+  --sand: #fff9ed;
+  --coral: #3f6664;
+  --coral-dark: #244b49;
+  --sun: #ff9a7a;
   --surface: #ffffff;
-  --line: #dbe7ed;
-  --muted: #627d98;
-  --shadow: 0 14px 40px rgba(16, 42, 67, .11);
+  --line: #d7e8e2;
+  --muted: #5c7773;
+  --shadow: 0 14px 40px rgba(15, 118, 110, .12);
 }
 
 * { box-sizing: border-box; }
@@ -34,6 +34,17 @@ a { color: inherit; }
 .btn-primary:hover, .btn-secondary:hover, .btn-ml:hover, .btn-login:hover, .btn-register:hover, .follow-btn:hover, .save-profile-btn:hover, .chat-input-row button:hover {
   background: var(--ocean-deep) !important;
 }
+
+/* One restrained TravelNest palette: teal, seafoam, warm white and slate. */
+.add-place-btn { background: #e2f3ee !important; color: #005d5a !important; border: 1px solid #a9d7cb !important; box-shadow: none !important; }
+.add-place-btn:hover { background: #cde9e1 !important; }
+.create-itinerary-header > span, .place-heading span, .section-kicker { color: #3f6664 !important; }
+.explore-btn { background: #007c78 !important; box-shadow: 0 10px 24px rgba(0,124,120,.22) !important; }
+.explore-btn:hover { background: #005d5a !important; }
+.trip-author img { border-color: #7bbeb2 !important; }
+.navbar { background: #005d5a !important; }
+.notif-badge { background: #3f6664 !important; }
+.logout-btn { color: #244b49 !important; background: #e2f3ee !important; }
 .feed-title, .section-title, .itinerary-title, .chat-header h3, .convo-list h2 { color: var(--ocean-deep) !important; }
 .tab-navigation button.active, .convo-item.active, .msg-row.own .msg-bubble { background: var(--ocean) !important; }
 .user-avatar, .profile-picture { border-color: var(--sun) !important; }

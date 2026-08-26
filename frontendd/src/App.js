@@ -18,6 +18,7 @@ import { Routes, Route } from 'react-router-dom';
 import ItineraryDetails from './components/ItineraryDetails';
 import ForgotPassword from './components/ForgotPassword';
 import ResetPassword from './components/ResetPassword';
+import VerifyEmail from './components/VerifyEmail';
 
 
 
@@ -32,6 +33,7 @@ function App() {
 
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password/:token" element={<ResetPassword />} />
+        <Route path="/verify-email/:token" element={<VerifyEmail />} />
 
         <Route path="/itineraries/:id" element={<PrivateRoute><ItineraryDetails /></PrivateRoute>} />
         
