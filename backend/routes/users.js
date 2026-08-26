@@ -7,6 +7,7 @@ const multer = require('multer');
 
 const User = require('../models/User');
 const Itinerary = require('../models/Itinerary');
+const Notification = require('../models/Notification');
 const { verifyToken } = require('../middleware/authMiddleware');
 
 // Multer for profile pictures
@@ -184,6 +185,7 @@ router.post('/:id/follow', verifyToken, async (req, res) => {
         { _id: currentId },
         { $addToSet: { following: targetId } }
       );
+      await Notification.create({ recipient: targetId, actor: currentId, type: 'follow' });
     }
 
     const updatedTarget = await User.findById(targetId)

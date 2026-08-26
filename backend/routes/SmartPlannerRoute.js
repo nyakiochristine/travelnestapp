@@ -1,57 +1,47 @@
 const express = require('express');
-const router = express.Router();
 const Attraction = require('../models/Attraction');
-const Itinerary = require('../models/Itinerary'); 
+const Itinerary = require('../models/Itinerary');
 const { verifyToken } = require('../middleware/authMiddleware');
-const { generateClusteredItinerary } = require('../utils/ItineraryEngine');
+
+const router = express.Router();
+const categoryMatches = (attraction, interests) => !interests.length || interests.some(interest => attraction.category?.toLowerCase().includes(interest.toLowerCase()));
+const distance = (a, b) => {
+  const radians = value => value * Math.PI / 180;
+  const dLat = radians(b.lat - a.lat), dLng = radians(b.lng - a.lng);
+  const s = Math.sin(dLat / 2) ** 2 + Math.cos(radians(a.lat)) * Math.cos(radians(b.lat)) * Math.sin(dLng / 2) ** 2;
+  return 6371 * 2 * Math.atan2(Math.sqrt(s), Math.sqrt(1 - s));
+};
 
 router.post('/generate', verifyToken, async (req, res) => {
-    try {
-        const { title, baseAttractionId } = req.body;
-
-        // 1. Refresh clusters
-        const attractionCount = await Attraction.countDocuments();
-        if (attractionCount === 0) {
-            return res.status(400).json({ message: 'Add at least one attraction before generating a plan' });
-        }
-        await generateClusteredItinerary(Math.min(4, attractionCount));
-
-        // 2. Find starting point
-        const base = await Attraction.findById(baseAttractionId);
-        if (!base) return res.status(404).json({ message: "Landmark not found" });
-
-        // 3. Find geographical neighbors
-        const neighbors = await Attraction.find({ 
-            clusterId: base.clusterId,
-            _id: { $ne: base._id } 
-        });
-
-        // 4. MAP TO YOUR MANUAL SCHEMA FORMAT
-        // Instead of saving IDs, we save objects that match your PlaceSchema
-        const allPlaces = [base, ...neighbors].map(attr => ({
-            name: attr.name,
-            linkedAttraction: attr._id, // This links it to the ML data
-            notes: "Automatically suggested based on regional proximity.",
-            activities: [] // Keeps your manual activity structure ready to use
-        }));
-
-        const smartPlan = new Itinerary({
-            title: title || `Discovery: ${base.location} Region`,
-            user: req.userId,
-            places: allPlaces, // Now perfectly compatible with your model!
-            isAiGenerated: true 
-        });
-
-        await smartPlan.save();
-        
-        // Populate the link if you want to pull extra data (like Lat/Lng) later
-        const result = await Itinerary.findById(smartPlan._id).populate('places.linkedAttraction');
-        
-        res.status(201).json(result);
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: err.message });
-    }
+  try {
+    const { title, baseAttractionId, days = 3, interests = [], pace = 'balanced', budget = '' } = req.body;
+    const safeInterests = Array.isArray(interests) ? interests.filter(value => typeof value === 'string') : [];
+    const tripDays = Math.min(Math.max(Number(days) || 3, 1), 14);
+    const base = await Attraction.findById(baseAttractionId);
+    if (!base) return res.status(404).json({ error: 'Choose a valid starting landmark.' });
+    const attractions = await Attraction.find();
+    const matches = attractions
+      .filter(item => item._id.toString() !== base._id.toString() && categoryMatches(item, safeInterests))
+      .map(item => ({ ...item.toObject(), distanceKm: distance(base, item) }))
+      .sort((a, b) => a.distanceKm - b.distanceKm);
+    const stopsPerDay = pace === 'relaxed' ? 2 : pace === 'packed' ? 4 : 3;
+    const selected = [base.toObject(), ...matches.slice(0, Math.max(tripDays * stopsPerDay - 1, 0))];
+    const places = selected.map((item, index) => ({
+      name: item.name, linkedAttraction: item._id,
+      notes: index === 0 ? `Start your trip in ${item.location}. This is your base for nearby discoveries.` : `Suggested because it matches your interests and is about ${Math.round(item.distanceKm)} km from your starting point.`,
+      activities: []
+    }));
+    const smartPlan = await Itinerary.create({
+      title: title?.trim() || `Discover ${base.location}`,
+      user: req.userId, places, budget, isAiGenerated: true, isPublic: false
+    });
+    const dailyPlan = Array.from({ length: tripDays }, (_, index) => ({
+      day: index + 1,
+      theme: index === 0 ? `Arrive and explore ${base.location}` : 'Local discoveries',
+      stops: selected.slice(index * stopsPerDay, (index + 1) * stopsPerDay).map(stop => stop.name),
+      rationale: pace === 'relaxed' ? 'Kept intentionally light so you have time to linger.' : 'Stops are grouped by proximity to reduce travel time.'
+    })).filter(day => day.stops.length);
+    res.status(201).json({ itinerary: await Itinerary.findById(smartPlan._id).populate('places.linkedAttraction'), dailyPlan, summary: { days: tripDays, pace, interestMatch: safeInterests.length ? safeInterests.join(', ') : 'a balanced mix of local highlights' } });
+  } catch (error) { res.status(500).json({ error: 'Could not generate your itinerary.' }); }
 });
-
 module.exports = router;
