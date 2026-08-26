@@ -1,82 +1,35 @@
-import React, { useState, useEffect } from 'react';
-import './Dashboard.css'; // Reuse your dashboard styles
+import React, { useEffect, useState } from 'react';
+import './Dashboard.css';
 
+const INTERESTS = ['Wildlife', 'Beach', 'Culture', 'Adventure', 'Historical'];
 function SmartPlanner({ token, onCreated }) {
-  const [title, setTitle] = useState('');
   const [attractions, setAttractions] = useState([]);
-  const [selectedId, setSelectedId] = useState('');
+  const [form, setForm] = useState({ title: '', baseAttractionId: '', days: 3, pace: 'balanced', budget: '', interests: [] });
+  const [result, setResult] = useState(null);
+  const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-
-  // Load the seeded landmarks from your database
-  useEffect(() => {
-    fetch('http://localhost:3001/api/attractions')
-      .then(res => res.json())
-      .then(data => setAttractions(data))
-      .catch(err => console.error("Error fetching landmarks:", err));
-  }, []);
-
-  const handleGenerate = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-
+  useEffect(() => { fetch('http://localhost:3001/api/attractions').then(r => r.json()).then(data => setAttractions(Array.isArray(data) ? data : [])).catch(() => setError('Could not load destinations.')); }, []);
+  const toggleInterest = interest => setForm(current => ({ ...current, interests: current.interests.includes(interest) ? current.interests.filter(value => value !== interest) : [...current.interests, interest] }));
+  const generate = async event => {
+    event.preventDefault(); setLoading(true); setError('');
     try {
-      const res = await fetch('http://localhost:3001/api/smart-planner/generate', {
-        method: 'POST',
-        headers: { 
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}` 
-        },
-        body: JSON.stringify({ 
-          title, 
-          baseAttractionId: selectedId // The key for the ML route
-        })
-      });
-
-      if (res.ok) {
-        alert("ML Engine has generated your regional itinerary!");
-        setTitle('');
-        setSelectedId('');
-        onCreated(); // Refresh the list on the Dashboard
-      }
-    } catch (err) {
-      console.error("ML Generation Error:", err);
-    } finally {
-      setLoading(false);
-    }
+      const response = await fetch('http://localhost:3001/api/smart-planner/generate', { method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` }, body: JSON.stringify(form) });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || 'Could not generate your itinerary.');
+      setResult(data); onCreated();
+    } catch (issue) { setError(issue.message); } finally { setLoading(false); }
   };
-
-  return (
-    <div className="tool-card ml-planner-box">
-      <div className="tool-header">
-        <span className="badge">AI Powered</span>
-        <h3>Smart Regional Planner</h3>
-      </div>
-      <p className="tool-desc">Pick one landmark. Our K-means algorithm will find neighboring SMEs and attractions to build your trip.</p>
-      
-      <form onSubmit={handleGenerate} className="tool-form">
-        <input 
-          type="text" 
-          placeholder="Give your trip a name..." 
-          value={title} 
-          onChange={e => setTitle(e.target.value)}
-          required 
-        />
-        
-        <select value={selectedId} onChange={e => setSelectedId(e.target.value)} required>
-          <option value="">-- Select a Starting Landmark --</option>
-          {attractions.map(attr => (
-            <option key={attr._id} value={attr._id}>
-              {attr.name} ({attr.location})
-            </option>
-          ))}
-        </select>
-
-        <button type="submit" className="btn-ml" disabled={loading || !selectedId}>
-          {loading ? "Clustering Data..." : "Generate Optimized Itinerary"}
-        </button>
-      </form>
-    </div>
-  );
+  return <div className="tool-card planner-v2">
+    <div className="tool-header"><span className="badge">SMART PLANNER</span><h3>Build a trip that fits you</h3><p>Choose your starting point and travel style. We will group suitable places into an editable route.</p></div>
+    <form onSubmit={generate} className="tool-form planner-form">
+      <input placeholder="Name this trip" value={form.title} onChange={e => setForm({ ...form, title: e.target.value })} required />
+      <select value={form.baseAttractionId} onChange={e => setForm({ ...form, baseAttractionId: e.target.value })} required><option value="">Choose your starting landmark</option>{attractions.map(item => <option key={item._id} value={item._id}>{item.name} — {item.location}</option>)}</select>
+      <div className="planner-row"><label>Days<select value={form.days} onChange={e => setForm({ ...form, days: e.target.value })}>{[1,2,3,4,5,6,7].map(day => <option key={day}>{day}</option>)}</select></label><label>Travel pace<select value={form.pace} onChange={e => setForm({ ...form, pace: e.target.value })}><option value="relaxed">Relaxed</option><option value="balanced">Balanced</option><option value="packed">Packed</option></select></label><label>Budget (optional)<input value={form.budget} onChange={e => setForm({ ...form, budget: e.target.value })} placeholder="e.g. KES 40,000" /></label></div>
+      <fieldset><legend>What are you into?</legend><div className="interest-chips">{INTERESTS.map(interest => <button type="button" className={form.interests.includes(interest) ? 'selected' : ''} key={interest} onClick={() => toggleInterest(interest)}>{interest}</button>)}</div></fieldset>
+      <button className="btn-ml" disabled={loading}>{loading ? 'Building your route…' : 'Generate my itinerary'}</button>
+    </form>
+    {error && <p className="planner-error">{error}</p>}
+    {result && <section className="planner-result"><div><span className="badge">YOUR PLAN</span><h4>{result.itinerary.title}</h4><p>{result.summary.days} days · {result.summary.pace} pace · {result.summary.interestMatch}</p></div>{result.dailyPlan.map(day => <article key={day.day}><strong>Day {day.day} — {day.theme}</strong><p>{day.stops.join(' → ')}</p><small>{day.rationale}</small></article>)}</section>}
+  </div>;
 }
-
 export default SmartPlanner;

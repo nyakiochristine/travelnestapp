@@ -9,16 +9,10 @@ function Navbar() {
   const navigate = useNavigate();
 
   const [openNotif, setOpenNotif] = useState(false);
+  const [notifications, setNotifications] = useState([]);
   const dropdownRef = useRef(null);
 
-  const notifications = user
-    ? [
-        { id: 1, text: 'Ken liked your itinerary “Malindi 4 day trip”', time: '2h ago' },
-        { id: 2, text: 'Anita saved your itinerary “Coastal trip”', time: '5h ago' },
-        { id: 3, text: 'Max started following you', time: '1d ago' }
-      ]
-    : [];
-  const unreadCount = notifications.length;
+  const unreadCount = notifications.filter(notification => !notification.read).length;
 
   const handleLogout = () => {
     logout();
@@ -36,6 +30,14 @@ function Navbar() {
     if (openNotif) document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [openNotif]);
+
+  useEffect(() => {
+    if (!user?.token) return setNotifications([]);
+    fetch('http://localhost:3001/api/notifications', { headers: { Authorization: `Bearer ${user.token}` } })
+      .then(response => response.ok ? response.json() : [])
+      .then(data => setNotifications(Array.isArray(data) ? data : []))
+      .catch(() => setNotifications([]));
+  }, [user?.token]);
 
   return (
     <nav className="navbar">
@@ -93,11 +95,11 @@ function Navbar() {
                   ) : (
                     <ul className="notif-list">
                       {notifications.map(n => (
-                        <li key={n.id} className="notif-item">
+                        <li key={n._id} className="notif-item">
                           <div className="notif-dot" />
                           <div className="notif-text">
-                            <span>{n.text}</span>
-                            <small>{n.time}</small>
+                            <span>{n.actor?.name || 'Someone'} {n.type === 'follow' ? 'started following you' : `${n.type}d your`} {n.itinerary?.title ? `itinerary “${n.itinerary.title}”` : 'profile'}</span>
+                            <small>{new Date(n.createdAt).toLocaleDateString()}</small>
                           </div>
                         </li>
                       ))}

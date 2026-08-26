@@ -192,20 +192,20 @@ function CreateItinerary({ onCreate }) {
 
   return (
     <div className="create-itinerary-container">
-      <h2 className="create-itinerary-title">Create New Itinerary</h2>
+      <header className="create-itinerary-header"><span>YOUR TRIP, YOUR STORY</span><h2 className="create-itinerary-title">Create a new itinerary</h2><p>Start with the essentials, then add every memorable stop along the way.</p></header>
       <form
         onSubmit={handleSubmit}
         className="create-itinerary-form"
         encType="multipart/form-data"
       >
         {/* Itinerary-level fields */}
-        <input
+        <label className="field-label">Trip name<input
           className="input-field"
           placeholder="Title of your trip"
           value={title}
           onChange={e => setTitle(e.target.value)}
           required
-        />
+        /></label>
 
         <div className="trip-dates">
           <label>Trip dates</label>
@@ -240,6 +240,7 @@ function CreateItinerary({ onCreate }) {
         {/* Places */}
         {places.map((place, pIdx) => (
           <div key={pIdx} className="place-group">
+            <div className="place-heading"><span>STOP {String(pIdx + 1).padStart(2, '0')}</span><strong>{place.name || 'New destination'}</strong></div>
             <input
               className="input-field"
               placeholder="Place Name"
@@ -345,10 +346,10 @@ function CreateItinerary({ onCreate }) {
         ))}
 
         <button type="button" onClick={addPlace} className="add-place-btn">
-          Add Place
+          + Add another stop
         </button>
         <button type="submit" className="create-btn">
-          Publish Itinerary
+          Publish your itinerary
         </button>
       </form>
     </div>
@@ -356,5 +357,4 @@ function CreateItinerary({ onCreate }) {
 }
 
 export default CreateItinerary;
-
 
