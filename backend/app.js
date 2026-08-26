@@ -10,6 +10,7 @@ const itineraryRoutes = require('./routes/itinerary');
 const attractionRoutes = require('./routes/attraction');
 const usersRoutes = require('./routes/users');
 const smartPlannerRoute = require('./routes/SmartPlannerRoute');
+const notificationRoutes = require('./routes/notifications');
 
 
 
@@ -45,6 +46,7 @@ app.use('/api/attractions', attractionRoutes);
 
 
 app.use('/api/smart-planner', smartPlannerRoute);
+app.use('/api/notifications', notificationRoutes);
 
 
 
