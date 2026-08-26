@@ -7,11 +7,14 @@ function Login() {
   const { login } = useContext(AuthContext);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [feedback, setFeedback] = useState('');
+  const [submitting, setSubmitting] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = async e => {
     e.preventDefault();
     try {
+      setSubmitting(true); setFeedback('');
       const response = await fetch('http://localhost:3001/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -22,15 +25,15 @@ function Login() {
 
       if (response.ok) {
         login({ token: data.token, user: data.user });
-        alert('Login successful');
-        navigate('/dashboard');
+        setFeedback('Welcome back. Taking you to your trip planner…');
+        setTimeout(() => navigate('/dashboard'), 500);
       } else {
-        alert(data.error || 'Login failed');
+        setFeedback(data.error || 'We could not sign you in. Please check your details.');
       }
     } catch (error) {
-      alert('Network error, please try again.');
+      setFeedback('We could not reach TravelNest. Please try again.');
       console.error('Login error:', error);
-    }
+    } finally { setSubmitting(false); }
   };
 
   return (
@@ -61,8 +64,10 @@ function Login() {
           required
         />
 
-        <button type="submit" className="btn-login">Login</button>
+        <button type="submit" className="btn-login" disabled={submitting}>{submitting ? 'Signing you in…' : 'Login'}</button>
       </form>
+
+      {feedback && <p className="auth-feedback" role="status">{feedback}</p>}
 
       <div style={{ marginTop: '12px' }}>
         <Link to="/forgot-password">Forgot Password?</Link>

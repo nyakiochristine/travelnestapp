@@ -53,17 +53,18 @@ function Navbar() {
           </>
         ) : (
           <>
-            <Link to="/dashboard">Dashboard</Link>
-            <Link to="/itineraries">Itineraries</Link>
+            <Link to="/itineraries">Explore</Link>
+            <Link to="/dashboard">Plan</Link>
             <Link to="/create">Create</Link>
-            <Link to="/edit-profile">Edit Profile</Link>
+            <Link to="/profiles">Community</Link>
+            <Link to="/business">Business</Link>
 
             {user.user && (
               <Link
                 to={`/profile/${user.user._id}`}
                 className="nav-profile-link"
               >
-                My Profile
+                Account
               </Link>
             )}
 
