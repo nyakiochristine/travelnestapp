@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const Attraction = require('../models/Attraction');
 const User = require('../models/User');
+const PlaceSuggestion = require('../models/PlaceSuggestion');
 const { verifyToken } = require('../middleware/authMiddleware');
 
 const listingFields = ['name', 'location', 'lat', 'lng', 'category', 'type', 'region', 'tags', 'description', 'priceRange', 'currency', 'estimatedDuration', 'openingHours', 'contactEmail', 'contactPhone', 'website', 'amenities'];
@@ -26,6 +27,7 @@ router.get('/my', verifyToken, async (req, res) => {
   if (isAdmin(user)) {
     response.pendingListings = await Attraction.find({ status: 'pending' }).populate('owner', 'name email').sort({ createdAt: 1 });
     response.businessApplications = await User.find({ role: 'business', businessVerificationStatus: 'pending' }).select('name email businessVerificationStatus createdAt');
+    response.placeSuggestions = await PlaceSuggestion.find({ status: 'pending' }).populate('submittedBy', 'name').sort({ updatedAt: -1 });
   }
   res.json(response);
 });
@@ -81,6 +83,14 @@ router.patch('/:id/status', verifyToken, async (req, res) => {
   const attraction = await Attraction.findByIdAndUpdate(req.params.id, { status: req.body.status }, { new: true });
   if (!attraction) return res.status(404).json({ error: 'Listing not found.' });
   res.json(attraction);
+});
+
+router.patch('/place-suggestions/:id/status', verifyToken, async (req, res) => {
+  if (!isAdmin(await currentUser(req))) return res.status(403).json({ error: 'Admin access required.' });
+  if (!['approved', 'rejected'].includes(req.body.status)) return res.status(400).json({ error: 'Choose approved or rejected.' });
+  const suggestion = await PlaceSuggestion.findByIdAndUpdate(req.params.id, { status: req.body.status }, { new: true });
+  if (!suggestion) return res.status(404).json({ error: 'Place suggestion not found.' });
+  res.json(suggestion);
 });
 
 router.get('/', async (_req, res) => {
