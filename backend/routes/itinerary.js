@@ -3,6 +3,8 @@ const multer = require('multer');
 const path = require('path');
 const Itinerary = require('../models/Itinerary');
 const Notification = require('../models/Notification');
+const Attraction = require('../models/Attraction');
+const PlaceSuggestion = require('../models/PlaceSuggestion');
 const { verifyToken } = require('../middleware/authMiddleware');
 
 const router = express.Router();
@@ -16,6 +18,7 @@ const upload = multer({ storage });
 function normalizePlaces(places = []) {
   return places.filter(Boolean).map(place => ({
     name: place.name || '',
+    linkedAttraction: place.linkedAttraction || undefined,
     date: place.date || null,
     notes: place.notes || '',
     links: Array.isArray(place.links) ? place.links.filter(Boolean) : [],
@@ -29,6 +32,22 @@ function normalizePlaces(places = []) {
         }))
       : []
   }));
+}
+
+const placeKey = name => name.toLowerCase().replace(/[^a-z0-9]/g, '');
+async function capturePublicPlaceSuggestions(itinerary) {
+  if (!itinerary.isPublic) return;
+  for (const place of itinerary.places || []) {
+    if (!place.name?.trim() || place.linkedAttraction) continue;
+    const normalizedName = placeKey(place.name);
+    const exists = await Attraction.exists({ name: new RegExp(`^${place.name.trim().replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`, 'i') });
+    if (exists) continue;
+    await PlaceSuggestion.findOneAndUpdate(
+      { normalizedName },
+      { $setOnInsert: { name: place.name.trim(), normalizedName, notes: place.notes || '', links: place.links || [], activityNames: (place.activities || []).map(activity => activity.name).filter(Boolean) }, $addToSet: { sourceItineraries: itinerary._id, submittedBy: itinerary.user } },
+      { upsert: true, new: true }
+    );
+  }
 }
 
 function requestPlaces(req) {
@@ -94,6 +113,7 @@ router.post('/', verifyToken, upload.any(), async (req, res) => {
     });
     addUploadedFiles(itinerary, req.files);
     await itinerary.save();
+    await capturePublicPlaceSuggestions(itinerary);
     res.status(201).json(itinerary);
   } catch (error) { res.status(400).json({ error: error.message || 'Failed to create itinerary' }); }
 });
@@ -187,6 +207,7 @@ router.put('/:id', verifyToken, upload.any(), async (req, res) => {
     if (req.body.places) itinerary.places = requestPlaces(req);
     addUploadedFiles(itinerary, req.files);
     await itinerary.save();
+    await capturePublicPlaceSuggestions(itinerary);
     res.json(itinerary);
   } catch (error) { res.status(400).json({ error: error.message || 'Failed to update itinerary' }); }
 });

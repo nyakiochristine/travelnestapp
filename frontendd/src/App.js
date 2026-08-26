@@ -39,6 +39,7 @@ function App() {
         
         <Route path="/create" element={<PrivateRoute><CreateItinerary /></PrivateRoute>} />
         <Route path="/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
+        <Route path="/business" element={<PrivateRoute><Dashboard initialTab="admin" /></PrivateRoute>} />
         <Route path="/itineraries" element={<PrivateRoute><Itineraries /></PrivateRoute>} />
         <Route path="/edit-profile" element={<PrivateRoute><ProfileEdit /></PrivateRoute>} />
         <Route path="/profile/:userId" element={<Profile />} />

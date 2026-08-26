@@ -15,6 +15,16 @@ const regionByLocation = {
   'Southern Safari': ['kajiado', 'amboseli', 'tsavo', 'taita']
 };
 const inferredRegion = place => place.region || Object.entries(regionByLocation).find(([, locations]) => locations.some(location => place.location?.toLowerCase().includes(location)))?.[0] || '';
+const regionFromTripName = title => {
+  const name = title?.toLowerCase() || '';
+  if (name.includes('coast') || name.includes('coastal')) return 'Coast';
+  if (name.includes('nairobi')) return 'Nairobi';
+  if (name.includes('rift') || name.includes('nakuru') || name.includes('naivasha')) return 'Rift Valley';
+  if (name.includes('western') || name.includes('kisumu')) return 'Western';
+  if (name.includes('central') || name.includes('laikipia')) return 'Central';
+  if (name.includes('safari') || name.includes('amboseli') || name.includes('tsavo')) return 'Southern Safari';
+  return '';
+};
 const categoryMatches = (attraction, interests) => !interests.length || interests.some(interest => attraction.category?.toLowerCase().includes(interest.toLowerCase()));
 const distance = (a, b) => {
   const radians = value => value * Math.PI / 180;
@@ -32,7 +42,10 @@ router.post('/generate', verifyToken, async (req, res) => {
     if (!base) return res.status(404).json({ error: 'Choose a valid starting landmark.' });
     const attractions = await Attraction.find({ $or: [{ status: 'approved' }, { status: { $exists: false } }] });
     const maxDistanceKm = maxDistanceForPace[pace] || maxDistanceForPace.balanced;
-    const tripRegion = region || inferredRegion(base);
+    const baseRegion = inferredRegion(base);
+    const namedRegion = regionFromTripName(title);
+    // The selected starting place is authoritative; a title only helps when it agrees with (or fills in) that location.
+    const tripRegion = region || (namedRegion && (!baseRegion || namedRegion === baseRegion) ? namedRegion : baseRegion);
     const nearbyAttractions = attractions
       .filter(item => item._id.toString() !== base._id.toString())
       .filter(item => !tripRegion || inferredRegion(item) === tripRegion)

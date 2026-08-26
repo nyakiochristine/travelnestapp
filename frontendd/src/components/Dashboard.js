@@ -8,12 +8,12 @@ import './Dashboard.css';
 
 // --- SUB-COMPONENTS ---
 // --- MAIN DASHBOARD ---
-function Dashboard() {
+function Dashboard({ initialTab = 'planner' }) {
   const { user } = useContext(AuthContext);
   const token = user?.token;
 
   const [itineraries, setItineraries] = useState([]);
-  const [activeTab, setActiveTab] = useState('planner'); 
+  const [activeTab, setActiveTab] = useState(initialTab); 
   const [editingItinerary, setEditingItinerary] = useState(null);
   const [message, setMessage] = useState('');
 

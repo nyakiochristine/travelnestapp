@@ -43,7 +43,7 @@ export default function ForgotPassword() {
 
       {resetLink && (
         <div style={{ marginTop: 15 }}>
-          <p>Development reset link:</p>
+          <p>Development-only reset link:</p>
           <a href={resetLink}>{resetLink}</a>
         </div>
       )}

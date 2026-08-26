@@ -65,3 +65,4 @@
 .btn-login:hover {
   background-color: #0c3654;
 }
+.btn-login:disabled { opacity: .7; cursor: wait; }.auth-feedback { width: min(384px, 100%); margin: 1rem 0 0; padding: .75rem 1rem; border: 1px solid #a9d7cb; border-radius: 10px; background: #f0faf7; color: #005d5a; text-align: center; font-weight: 700; }
