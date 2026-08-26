@@ -160,16 +160,16 @@ function EditItinerary({ itinerary, onClose, onSave }) {
   return (
     <div className="modal-overlay">
       <div className="modal-content">
-        <h3>Edit Itinerary</h3>
+        <div className="modal-header"><div><span>TRIP EDITOR</span><h3>Edit your itinerary</h3></div><button type="button" className="modal-close" onClick={onClose} aria-label="Close editor">×</button></div>
         <form onSubmit={handleSubmit}>
           {/* Trip level fields */}
-          <input 
+          <label className="editor-label">Trip name<input 
             type="text"
             value={title}
             onChange={e => setTitle(e.target.value)}
             required
             placeholder="Trip Title"
-          />
+          /></label>
           
           <div className="trip-dates">
             <label>Trip Dates</label>
@@ -200,6 +200,7 @@ function EditItinerary({ itinerary, onClose, onSave }) {
           {/* Places */}
           {places.map((place, pIdx) => (
             <div key={pIdx} className="place-group">
+              <div className="place-group-title"><span>STOP {String(pIdx + 1).padStart(2, '0')}</span><strong>Plan this stop</strong></div>
               <input
                 type="text"
                 placeholder="Place Name *"

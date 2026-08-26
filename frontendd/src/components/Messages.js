@@ -146,14 +146,16 @@ function Messages() {
         {activeConvo ? (
           <>
             <div className="chat-header">
-              <h3>
+              <span className="chat-avatar">{activeConvo.type === 'group' ? '✦' : ((activeConvo.members || []).find(member => member._id !== user.user._id)?.name || 'T').charAt(0)}</span>
+              <div><h3>
                 {activeConvo.type === 'group'
                   ? activeConvo.name
                   : ((activeConvo.members || []).find(member => member._id !== user.user._id)?.name || 'Conversation')}
-              </h3>
+              </h3><p>Travel chat · share routes, stays and local tips</p></div>
             </div>
 
             <div className="chat-messages">
+              <div className="chat-day-label">Conversation</div>
               {messages.map(m => (
                 <div
                   key={m._id}

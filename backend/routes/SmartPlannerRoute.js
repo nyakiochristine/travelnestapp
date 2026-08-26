@@ -4,6 +4,8 @@ const Itinerary = require('../models/Itinerary');
 const { verifyToken } = require('../middleware/authMiddleware');
 
 const router = express.Router();
+const maxDistanceForPace = { relaxed: 70, balanced: 100, packed: 125 };
+const landmarkKey = name => name.toLowerCase().replace(/national park|conservancy/g, '').replace(/[^a-z0-9]/g, '');
 const categoryMatches = (attraction, interests) => !interests.length || interests.some(interest => attraction.category?.toLowerCase().includes(interest.toLowerCase()));
 const distance = (a, b) => {
   const radians = value => value * Math.PI / 180;
@@ -19,13 +21,26 @@ router.post('/generate', verifyToken, async (req, res) => {
     const tripDays = Math.min(Math.max(Number(days) || 3, 1), 14);
     const base = await Attraction.findById(baseAttractionId);
     if (!base) return res.status(404).json({ error: 'Choose a valid starting landmark.' });
-    const attractions = await Attraction.find();
-    const matches = attractions
-      .filter(item => item._id.toString() !== base._id.toString() && categoryMatches(item, safeInterests))
+    const attractions = await Attraction.find({ $or: [{ status: 'approved' }, { status: { $exists: false } }] });
+    const maxDistanceKm = maxDistanceForPace[pace] || maxDistanceForPace.balanced;
+    const nearbyAttractions = attractions
+      .filter(item => item._id.toString() !== base._id.toString())
       .map(item => ({ ...item.toObject(), distanceKm: distance(base, item) }))
+      .filter(item => item.distanceKm <= maxDistanceKm)
       .sort((a, b) => a.distanceKm - b.distanceKm);
+    const interestMatches = nearbyAttractions.filter(item => categoryMatches(item, safeInterests));
+    // A traveller's selected interests guide the route, but never justify an unrealistic cross-country jump.
+    const usedInterestFallback = safeInterests.length > 0 && interestMatches.length === 0;
+    const matches = interestMatches.length ? interestMatches : nearbyAttractions;
     const stopsPerDay = pace === 'relaxed' ? 2 : pace === 'packed' ? 4 : 3;
-    const selected = [base.toObject(), ...matches.slice(0, Math.max(tripDays * stopsPerDay - 1, 0))];
+    const uniqueMatches = matches.filter((item, index, list) => list.findIndex(candidate => landmarkKey(candidate.name) === landmarkKey(item.name)) === index);
+    const selected = [base.toObject()];
+    const remaining = uniqueMatches.slice();
+    while (remaining.length && selected.length < tripDays * stopsPerDay) {
+      const lastStop = selected.at(-1);
+      const nearestIndex = remaining.reduce((best, item, index) => distance(lastStop, item) < distance(lastStop, remaining[best]) ? index : best, 0);
+      selected.push(remaining.splice(nearestIndex, 1)[0]);
+    }
     const places = selected.map((item, index) => ({
       name: item.name, linkedAttraction: item._id,
       notes: index === 0 ? `Start your trip in ${item.location}. This is your base for nearby discoveries.` : `Suggested because it matches your interests and is about ${Math.round(item.distanceKm)} km from your starting point.`,
@@ -35,13 +50,16 @@ router.post('/generate', verifyToken, async (req, res) => {
       title: title?.trim() || `Discover ${base.location}`,
       user: req.userId, places, budget, isAiGenerated: true, isPublic: false
     });
-    const dailyPlan = Array.from({ length: tripDays }, (_, index) => ({
-      day: index + 1,
-      theme: index === 0 ? `Arrive and explore ${base.location}` : 'Local discoveries',
-      stops: selected.slice(index * stopsPerDay, (index + 1) * stopsPerDay).map(stop => stop.name),
-      rationale: pace === 'relaxed' ? 'Kept intentionally light so you have time to linger.' : 'Stops are grouped by proximity to reduce travel time.'
-    })).filter(day => day.stops.length);
-    res.status(201).json({ itinerary: await Itinerary.findById(smartPlan._id).populate('places.linkedAttraction'), dailyPlan, summary: { days: tripDays, pace, interestMatch: safeInterests.length ? safeInterests.join(', ') : 'a balanced mix of local highlights' } });
+    const dailyPlan = Array.from({ length: tripDays }, (_, index) => {
+      const stops = selected.slice(index * stopsPerDay, (index + 1) * stopsPerDay).map(stop => stop.name);
+      return {
+        day: index + 1,
+        theme: index === 0 ? `Arrive and explore ${base.location}` : 'Local discoveries',
+        stops,
+        rationale: stops.length === 1 ? 'No suitable nearby stops were found in the current directory, so this day stays intentionally open.' : pace === 'relaxed' ? 'Kept intentionally light so you have time to linger.' : `Stops are ordered to minimise backtracking and stay within ${maxDistanceKm} km of your starting area.`
+      };
+    }).filter(day => day.stops.length);
+    res.status(201).json({ itinerary: await Itinerary.findById(smartPlan._id).populate('places.linkedAttraction'), dailyPlan, summary: { days: tripDays, pace, interestMatch: safeInterests.length ? safeInterests.join(', ') : 'a balanced mix of local highlights', nearbyStops: uniqueMatches.length, distanceLimitKm: maxDistanceKm, usedInterestFallback } });
   } catch (error) { res.status(500).json({ error: 'Could not generate your itinerary.' }); }
 });
 module.exports = router;
