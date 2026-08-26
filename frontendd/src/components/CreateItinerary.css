@@ -1,12 +1,19 @@
 :root {
-  --burgundy: #7b001c;
-  --burgundy-dark: #5b0015;
-  --burgundy-soft: #fff3f6;
-  --border-soft: #e6dde6;
-  --text-main: #1c2233;
-  --text-muted: #6b7280;
-  --field-bg: #f9f9ff;
+  --burgundy: #007c78;
+  --burgundy-dark: #005d5a;
+  --burgundy-soft: #e2f3ee;
+  --border-soft: #c9e6df;
+  --text-main: #153b3a;
+  --text-muted: #5c7773;
+  --field-bg: #fbfefd;
 }
+
+/* Structured trip builder — teal, sand and coral only. */
+.create-itinerary-container { max-width: 900px; margin: 3.5rem auto 5rem; }
+.create-itinerary-header { margin: 0 auto 2rem; max-width: 680px; text-align: center; }.create-itinerary-header > span { color: #e76f51; font-size: .8rem; font-weight: 800; letter-spacing: .1em; }.create-itinerary-header p { margin: .6rem 0 0; color: #5c7773; font-size: 1.05rem; }.create-itinerary-title { margin: .35rem 0 0; font-family: 'Fraunces', Georgia, serif; font-size: clamp(2.2rem, 4vw, 3.4rem); color: #005d5a; letter-spacing: -.04em; }
+.create-itinerary-form { padding: 2.2rem; border: 1px solid #cfe5df; border-radius: 20px; box-shadow: 0 14px 36px rgba(0,124,120,.1); }.field-label { display: block; color: #005d5a; font-size: .9rem; font-weight: 800; }.field-label .input-field { margin-top: .45rem; }
+.create-itinerary-form .input-field, .create-itinerary-form textarea, .currency-select, .links input { border-color: #c7dfd8; background: #fbfefd; }.create-itinerary-form .input-field:focus, .create-itinerary-form textarea:focus { border-color: #007c78; background: #fff; box-shadow: 0 0 0 3px rgba(0,124,120,.12); }.trip-dates label, .trip-cover label, .place-images label, .links label { color: #005d5a; font-weight: 800; }
+.place-group { padding: 1.4rem; background: #f0faf7; border: 1px solid #c9e6df; box-shadow: none; }.place-heading { display: flex; align-items: baseline; gap: .65rem; margin-bottom: 1.15rem; }.place-heading span { color: #e76f51; font-size: .75rem; font-weight: 800; letter-spacing: .1em; }.place-heading strong { color: #005d5a; font-size: 1.12rem; }.activities label { color: #005d5a; }.activity-row { border-color: #d7ebe5; box-shadow: none; }.add-place-btn, .create-btn, .activities button, .links button { background: #007c78; box-shadow: 0 4px 12px rgba(0,124,120,.2); border-radius: 9px; }.add-place-btn:hover, .create-btn:hover, .activities button:hover, .links button:hover { background: #005d5a; box-shadow: 0 6px 16px rgba(0,124,120,.24); }.add-place-btn { background: #e2f3ee; color: #005d5a; border: 1px solid #a9d7cb; }.add-place-btn:hover { background: #cde9e1; color: #005d5a; }
 
 /* Container */
 
@@ -324,3 +331,27 @@
     gap: 0.45rem;
   }
 }
+
+/* Keep every builder element inside its card and use one cohesive teal palette. */
+.create-itinerary-container *,
+.create-itinerary-container *::before,
+.create-itinerary-container *::after { box-sizing: border-box; }
+.create-itinerary-form { width: 100%; overflow: hidden; border-color: #c9e6df; box-shadow: 0 14px 36px rgba(0,124,120,.1); }
+.create-itinerary-form .input-field,
+.create-itinerary-form textarea,
+.create-itinerary-form .currency-select,
+.create-itinerary-form .links input { max-width: 100%; border-color: #c7dfd8; background: #fbfefd; }
+.create-itinerary-form .input-field:focus,
+.create-itinerary-form textarea:focus { border-color: #007c78; background: #fff; box-shadow: 0 0 0 3px rgba(0,124,120,.12); }
+.place-group, .activity-row, .links { width: 100%; max-width: 100%; overflow: hidden; }
+.place-group { background: #f0faf7; border-color: #c9e6df; box-shadow: none; }
+.activity-row { border-color: #d7ebe5; box-shadow: none; }
+.activity-cost-row { width: 100%; }
+.activity-cost-row .input-field { min-width: 0; }
+.currency-select { flex: 0 0 92px; max-width: 92px; }
+.trip-cover input[type="file"], .place-images input[type="file"], .activity-images input[type="file"] { max-width: 100%; color: var(--text-muted); }
+.add-place-btn, .create-btn, .activities button, .links button { background: #007c78; box-shadow: 0 4px 12px rgba(0,124,120,.2); border-radius: 9px; }
+.add-place-btn { background: #e2f3ee; color: #005d5a; border: 1px solid #a9d7cb; }
+.add-place-btn:hover { background: #cde9e1; color: #005d5a; }
+.create-itinerary-title, .place-heading strong { color: #005d5a; }
+@media (max-width: 640px) { .create-itinerary-form { padding: 1.1rem; }.place-group { padding: 1rem; }.currency-select { flex-basis: 100%; max-width: 100%; width: 100%; } }

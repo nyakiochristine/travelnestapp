@@ -81,6 +81,8 @@
   cursor: pointer;
 }
 
+.dashboard-message { display: flex; justify-content: space-between; max-width: 700px; margin: 0 auto 1rem; padding: .75rem 1rem; border-radius: 10px; background: #e0f2fe; color: #075985; font-weight: 700; }.dashboard-message button { border: 0; background: transparent; color: inherit; font-size: 1.1rem; }.journey-card-actions { display: flex; gap: .55rem; }.btn-delete { border: 0; padding: .5rem .8rem; border-radius: 8px; background: #fff1ed; color: #c95035; font-weight: 700; cursor: pointer; }
+
 /* Itinerary Card Styling */
 .itinerary-list {
   display: grid;
@@ -158,6 +160,8 @@
      border-radius: 20px;
       cursor: pointer;
        font-weight: 600; }
+
+.planner-v2 .tool-header p { margin: .3rem 0 1rem; color: #5c7773; line-height: 1.5; }.planner-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: .7rem; }.planner-row label, .planner-form fieldset { display: flex; flex-direction: column; gap: .35rem; color: #005d5a; font-size: .85rem; font-weight: 700; }.planner-row select, .planner-row input { width: 100%; min-width: 0; padding: .65rem; border: 1px solid #c9e6df; border-radius: 8px; }.planner-form fieldset { border: 0; padding: 0; margin: .3rem 0; }.planner-form legend { margin-bottom: .45rem; }.interest-chips { display: flex; flex-wrap: wrap; gap: .45rem; }.interest-chips button { border: 1px solid #a9d7cb; background: #e2f3ee; color: #005d5a; padding: .45rem .65rem; border-radius: 999px; font-weight: 700; }.interest-chips button.selected { background: #007c78; color: white; }.planner-error { color: #9b3e32; font-weight: 700; }.planner-result { margin-top: 1.25rem; padding-top: 1.25rem; border-top: 1px solid #c9e6df; }.planner-result h4 { margin: .35rem 0; color: #005d5a; font-size: 1.3rem; }.planner-result > div > p { color: #5c7773; }.planner-result article { margin-top: .65rem; padding: .85rem; border-left: 3px solid #007c78; background: #f0faf7; }.planner-result article p { margin: .3rem 0; color: #153b3a; }.planner-result small { color: #5c7773; } @media (max-width: 640px) { .planner-row { grid-template-columns: 1fr; } }
 .delete-btn { background: #fee2e2; 
   color: #991b1b;
    border: none;

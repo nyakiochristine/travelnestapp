@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { AuthContext } from './AuthContext';
 import TravelJournal from './CreateItinerary';
+import EditItinerary from './EditItinerary';
 import SmartPlanner from './SmartPlanner';
 import './Dashboard.css';
 
@@ -40,53 +41,6 @@ function AddLandmark({ token }) {
   );
 }
 
-function PlanTrip({ token, onCreated }) {
-  const [attractions, setAttractions] = useState([]);
-  const [selectedId, setSelectedId] = useState('');
-  const [title, setTitle] = useState('');
-
-  useEffect(() => {
-    fetch('http://localhost:3001/api/attractions')
-      .then(res => res.json())
-      .then(data => setAttractions(data));
-  }, []);
-
-  const handleGenerate = async () => {
-    try {
-      const res = await fetch('http://localhost:3001/api/smart-planner/generate', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-        body: JSON.stringify({ title, baseAttractionId: selectedId })
-      });
-      if (res.ok) { 
-        alert("ML-Optimized Itinerary Generated!"); 
-        onCreated(); 
-        setTitle(''); 
-        setSelectedId(''); 
-      } else {
-        const errorData = await res.json();
-        console.error("Generation failed:", errorData.message);
-      }
-    } catch (err) { 
-      console.error("Fetch error during generation:", err); 
-    }
-  };
-
-  return (
-    <div className="tool-card user-card">
-      <h3>AI Smart Planner</h3>
-      <div className="tool-form">
-        <input type="text" placeholder="Trip Title" value={title} onChange={e => setTitle(e.target.value)} />
-        <select value={selectedId} onChange={e => setSelectedId(e.target.value)}>
-          <option value="">-- Choose Base Landmark --</option>
-          {attractions.map(a => <option key={a._id} value={a._id}>{a.name}</option>)}
-        </select>
-        <button onClick={handleGenerate} className="btn-secondary" disabled={!selectedId || !title}>Generate Optimized Trip</button>
-      </div>
-    </div>
-  );
-}
-
 // --- MAIN DASHBOARD ---
 function Dashboard() {
   const { user } = useContext(AuthContext);
@@ -95,6 +49,7 @@ function Dashboard() {
   const [itineraries, setItineraries] = useState([]);
   const [activeTab, setActiveTab] = useState('planner'); 
   const [editingItinerary, setEditingItinerary] = useState(null);
+  const [message, setMessage] = useState('');
 
 
   const fetchItineraries = async () => {
@@ -119,6 +74,19 @@ function Dashboard() {
     fetchItineraries(); 
   }, [token]);
 
+  const deleteItinerary = async (itinerary) => {
+    if (!window.confirm(`Delete “${itinerary.title}”? This cannot be undone.`)) return;
+    try {
+      const response = await fetch(`http://localhost:3001/api/itineraries/${itinerary._id}`, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      if (!response.ok) throw new Error('Could not delete this journey.');
+      setItineraries(current => current.filter(item => item._id !== itinerary._id));
+      setMessage('Journey deleted.');
+    } catch (error) { setMessage(error.message); }
+  };
+
   if (!token) return <div className="dashboard-container"><p>Please log in.</p></div>;
 
   return (
@@ -140,8 +108,8 @@ function Dashboard() {
 
       {/* --- ACTIVE TOOL AREA --- */}
       <div className="tool-display-area">
-        {activeTab === 'planner' && <PlanTrip token={token} onCreated={fetchItineraries} />}
-        {activeTab === 'journal' && <TravelJournal token={token} onCreated={fetchItineraries} />}
+        {activeTab === 'planner' && <SmartPlanner token={token} onCreated={fetchItineraries} />}
+        {activeTab === 'journal' && <TravelJournal token={token} onCreate={fetchItineraries} />}
         {activeTab === 'admin' && <AddLandmark token={token} />}
       </div>
 
@@ -150,6 +118,7 @@ function Dashboard() {
       {/* --- HISTORY SECTION --- */}
       <section className="itinerary-list-section">
         <h2>Your Personal Journeys</h2>
+        {message && <div className="dashboard-message">{message}<button onClick={() => setMessage('')}>×</button></div>}
         <div className="itinerary-grid">
           {itineraries.length === 0 ? (
             <p className="empty-msg">You haven't created any journeys yet.</p>
@@ -164,13 +133,27 @@ function Dashboard() {
                 </div>
                 <div className="card-body">
                   <p>{it.places?.length || 0} Places Visited</p>
-                  <button className="btn-edit" onClick={() => setEditingItinerary(it)}>Edit</button>
+                  <div className="journey-card-actions">
+                    <button className="btn-edit" onClick={() => setEditingItinerary(it)}>Edit</button>
+                    <button className="btn-delete" onClick={() => deleteItinerary(it)}>Delete</button>
+                  </div>
                 </div>
               </div>
             ))
           )}
         </div>
       </section>
+      {editingItinerary && (
+        <EditItinerary
+          itinerary={editingItinerary}
+          onClose={() => setEditingItinerary(null)}
+          onSave={(updated) => {
+            setItineraries(current => current.map(item => item._id === updated._id ? updated : item));
+            setEditingItinerary(null);
+            setMessage('Journey updated.');
+          }}
+        />
+      )}
     </div>
   );
 }

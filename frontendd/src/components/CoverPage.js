@@ -16,24 +16,32 @@ const CoverPage = () => {
   return (
     <div className="cover-root">
       <div className="cover-main">
-        <div className="cover-brand">
-          <span className="travel">Travel</span>
-          <span className="nest">Nest</span>
+        <div className="hero-image" aria-hidden="true" />
+        <div className="cover-copy">
+          <div className="cover-brand">
+            <span className="travel">Travel</span>
+            <span className="nest">Nest</span>
+          </div>
+          <div className="cover-eyebrow">The travel community for Africa</div>
+          <h1 className="cover-title">Your next trip starts with a better plan.</h1>
+          <div className="cover-subtitle">
+            Create an itinerary, discover routes shared by other travellers and keep every great travel idea in one place.
+          </div>
+          <div className="cover-buttons">
+            <button className="explore-btn" onClick={() => navigate('/register')}>
+              Create your free account
+            </button>
+            <button className="join-btn" onClick={() => navigate('/login')}>
+              Log in
+            </button>
+          </div>
+          <div className="cover-tagline"><span>Save your ideas</span><span>Share real routes</span><span>Travel more confidently</span></div>
         </div>
-        <div className="cover-eyebrow">The travel community for Africa</div>
-        <h1 className="cover-title">Your next trip starts with a better plan.</h1>
-        <div className="cover-subtitle">
-          Create an itinerary, discover routes shared by other travellers and keep every great travel idea in one place.
+        <div className="trip-search" aria-label="Discover itineraries">
+          <div><span>Where do you want to go?</span><strong>Explore Africa</strong></div>
+          <div><span>What do you enjoy?</span><strong>Culture, coast, wildlife</strong></div>
+          <button onClick={() => navigate('/register')}>Find itineraries →</button>
         </div>
-        <div className="cover-buttons">
-          <button className="explore-btn" onClick={() => navigate('/register')}>
-            Create your free account
-          </button>
-          <button className="join-btn" onClick={() => navigate('/login')}>
-            Log in
-          </button>
-        </div>
-        <div className="cover-tagline"><span>Save your ideas</span><span>Share real routes</span><span>Travel more confidently</span></div>
       </div>
       <section className="how-it-works" aria-label="How TravelNest works">
         <div className="how-intro"><span className="section-kicker">Simple by design</span><h2>Plan it. Share it. Go.</h2><p>TravelNest keeps the best part of travel—the stories, advice and excitement—close to your next journey.</p></div>
