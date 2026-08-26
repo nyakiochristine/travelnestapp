@@ -6,6 +6,15 @@ const { verifyToken } = require('../middleware/authMiddleware');
 const router = express.Router();
 const maxDistanceForPace = { relaxed: 70, balanced: 100, packed: 125 };
 const landmarkKey = name => name.toLowerCase().replace(/national park|conservancy/g, '').replace(/[^a-z0-9]/g, '');
+const regionByLocation = {
+  Coast: ['mombasa', 'kwale', 'watamu', 'malindi', 'kilifi', 'lamu', 'bamburi', 'diani'],
+  Nairobi: ['nairobi', 'ngong'],
+  'Rift Valley': ['nakuru', 'naivasha', 'narok', 'elementaita', 'rift valley'],
+  Central: ['laikipia', 'nanyuki', 'nyeri', 'nyandarua', 'meru'],
+  Western: ['kisumu', 'kakamega', 'busia', 'rusinga', 'siaya'],
+  'Southern Safari': ['kajiado', 'amboseli', 'tsavo', 'taita']
+};
+const inferredRegion = place => place.region || Object.entries(regionByLocation).find(([, locations]) => locations.some(location => place.location?.toLowerCase().includes(location)))?.[0] || '';
 const categoryMatches = (attraction, interests) => !interests.length || interests.some(interest => attraction.category?.toLowerCase().includes(interest.toLowerCase()));
 const distance = (a, b) => {
   const radians = value => value * Math.PI / 180;
@@ -16,15 +25,17 @@ const distance = (a, b) => {
 
 router.post('/generate', verifyToken, async (req, res) => {
   try {
-    const { title, baseAttractionId, days = 3, interests = [], pace = 'balanced', budget = '' } = req.body;
+    const { title, baseAttractionId, days = 3, interests = [], pace = 'balanced', budget = '', region = '' } = req.body;
     const safeInterests = Array.isArray(interests) ? interests.filter(value => typeof value === 'string') : [];
     const tripDays = Math.min(Math.max(Number(days) || 3, 1), 14);
     const base = await Attraction.findById(baseAttractionId);
     if (!base) return res.status(404).json({ error: 'Choose a valid starting landmark.' });
     const attractions = await Attraction.find({ $or: [{ status: 'approved' }, { status: { $exists: false } }] });
     const maxDistanceKm = maxDistanceForPace[pace] || maxDistanceForPace.balanced;
+    const tripRegion = region || inferredRegion(base);
     const nearbyAttractions = attractions
       .filter(item => item._id.toString() !== base._id.toString())
+      .filter(item => !tripRegion || inferredRegion(item) === tripRegion)
       .map(item => ({ ...item.toObject(), distanceKm: distance(base, item) }))
       .filter(item => item.distanceKm <= maxDistanceKm)
       .sort((a, b) => a.distanceKm - b.distanceKm);
@@ -59,7 +70,7 @@ router.post('/generate', verifyToken, async (req, res) => {
         rationale: stops.length === 1 ? 'No suitable nearby stops were found in the current directory, so this day stays intentionally open.' : pace === 'relaxed' ? 'Kept intentionally light so you have time to linger.' : `Stops are ordered to minimise backtracking and stay within ${maxDistanceKm} km of your starting area.`
       };
     }).filter(day => day.stops.length);
-    res.status(201).json({ itinerary: await Itinerary.findById(smartPlan._id).populate('places.linkedAttraction'), dailyPlan, summary: { days: tripDays, pace, interestMatch: safeInterests.length ? safeInterests.join(', ') : 'a balanced mix of local highlights', nearbyStops: uniqueMatches.length, distanceLimitKm: maxDistanceKm, usedInterestFallback } });
+    res.status(201).json({ itinerary: await Itinerary.findById(smartPlan._id).populate('places.linkedAttraction'), dailyPlan, summary: { days: tripDays, pace, region: tripRegion || 'your starting area', interestMatch: safeInterests.length ? safeInterests.join(', ') : 'a balanced mix of local highlights', nearbyStops: uniqueMatches.length, distanceLimitKm: maxDistanceKm, usedInterestFallback } });
   } catch (error) { res.status(500).json({ error: 'Could not generate your itinerary.' }); }
 });
 module.exports = router;
