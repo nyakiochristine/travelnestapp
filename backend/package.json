@@ -21,6 +21,7 @@
     "ml-kmeans": "^7.0.0",
     "mongoose": "^8.19.3",
     "multer": "^2.0.2",
+    "nodemailer": "^9.0.5",
     "path": "^0.12.7",
     "skmeans": "^0.11.3"
   }

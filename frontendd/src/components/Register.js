@@ -54,7 +54,7 @@ function Register() {
         <button type="submit" className="btn-register">Register</button>
       </form>
       {error && <p className="auth-message">{error}</p>}
-      {verificationLink && <a className="auth-link" href={verificationLink}>Verify email and continue</a>}
+      {verificationLink && <a className="auth-link" href={verificationLink}>Development only: verify email and continue</a>}
     </div>
   );
 }
