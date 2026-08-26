@@ -1,10 +1,10 @@
 :root {
-  --burgundy: #7b001c;
-  --burgundy-dark: #5b0015;
-  --burgundy-soft: #fff3f6;
-  --border-soft: #e6dde6;
-  --text-main: #1c2233;
-  --text-muted: #6b7280;
+  --burgundy: #007c78;
+  --burgundy-dark: #005d5a;
+  --burgundy-soft: #e2f3ee;
+  --border-soft: #c9e6df;
+  --text-main: #153b3a;
+  --text-muted: #5c7773;
 }
 
 /* Container */
@@ -17,6 +17,17 @@
     "Segoe UI", sans-serif;
   color: var(--text-main);
 }
+
+/* Refined traveller identity and trip collection. */
+.profile-container { max-width: 1040px; margin-top: 3.2rem; }
+.profile-header { position: relative; align-items: center; padding: 2rem; border: 1px solid #c9e6df; box-shadow: 0 16px 38px rgba(0,124,120,.1); background: linear-gradient(135deg, #fff, #f0faf7); }
+.profile-header::before { content: none; }
+.profile-picture { width: 116px; height: 116px; border: 4px solid #7bbeb2; box-shadow: 0 8px 20px rgba(0,124,120,.18); }
+.profile-info { min-width: 0; flex: 1; }.profile-info h1 { font-family: 'Fraunces', Georgia, serif; font-size: clamp(2rem, 4vw, 3rem); color: #005d5a; letter-spacing: -.045em; }.profile-bio { color: #3f6664; font-size: 1rem; line-height: 1.6; }.profile-location { color: #007c78; font-weight: 700; }
+.profile-stats { gap: .6rem; margin-top: 1rem; flex-wrap: wrap; }.profile-stats span { padding: .55rem .75rem; border-radius: 9px; background: #e2f3ee; color: #3f6664; }.profile-stats span strong { color: #005d5a; font-size: 1.05rem; }
+.follow-btn, .message-btn, .save-profile-btn { border-radius: 9px; background: #007c78; box-shadow: none; }.message-btn { padding: .48rem 1rem; border: 1px solid #a9d7cb; border-radius: 9px; background: white; color: #005d5a; font-weight: 700; cursor: pointer; }.follow-btn.following { border-color: #007c78; color: #005d5a; }
+.profile-social-links a { border-color: #a9d7cb; background: #f0faf7; color: #005d5a; border-radius: 9px; }.profile-social-links a:hover, .tab-btn.active { background: #007c78; }
+.profile-itineraries { margin-top: 2.2rem; padding-top: 1.5rem; border-top: 1px solid #c9e6df; }.section-title { font-family: 'Fraunces', Georgia, serif; font-size: 1.75rem; color: #005d5a; }.itinerary-card { border-color: #c9e6df; box-shadow: 0 8px 20px rgba(0,124,120,.08); }.itinerary-card:hover { box-shadow: 0 14px 28px rgba(0,124,120,.16); }.itinerary-info { padding: 1rem; }.itinerary-title { color: #005d5a; }
 
 /* Header */
 
@@ -435,3 +446,6 @@
   font-size: 0.88rem;
   cursor: pointer;
 }
+
+/* Keep profile cards still—no hover overlay or lift effect. */
+.itinerary-card:hover { transform: none; box-shadow: 0 8px 20px rgba(0,124,120,.08); border-color: #8fcfc1; }

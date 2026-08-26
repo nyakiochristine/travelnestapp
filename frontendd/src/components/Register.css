@@ -65,3 +65,4 @@
 .btn-register:hover {
   background-color: #0c3654;
 }
+.password-hint, .auth-message, .auth-link { width: 320px; margin: .75rem auto 0; color: #486581; font-size: .9rem; }.auth-message { color: #075985; font-weight: 600; }.auth-link { display: block; color: #075985; font-weight: 700; text-align: center; }
