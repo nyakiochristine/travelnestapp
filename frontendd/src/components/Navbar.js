@@ -33,7 +33,7 @@ function Navbar() {
 
   useEffect(() => {
     if (!user?.token) return setNotifications([]);
-    fetch('http://localhost:3001/api/notifications', { headers: { Authorization: `Bearer ${user.token}` } })
+    fetch(window.__TRAVELNEST_API_URL__ + '/api/notifications', { headers: { Authorization: `Bearer ${user.token}` } })
       .then(response => response.ok ? response.json() : [])
       .then(data => setNotifications(Array.isArray(data) ? data : []))
       .catch(() => setNotifications([]));
@@ -69,9 +69,7 @@ function Navbar() {
             )}
 
             {/* Messages link/icon */}
-            <Link to="/messages" className="nav-icon-link" title="Messages">
-              💬
-            </Link>
+            <Link to="/messages" className="nav-utility-link">Messages</Link>
 
             {/* Notifications bell */}
             <div className="nav-notifications" ref={dropdownRef}>
@@ -80,7 +78,7 @@ function Navbar() {
                 className="notif-bell"
                 onClick={toggleDropdown}
               >
-                🔔
+                <span>Alerts</span>
                 {unreadCount > 0 && (
                   <span className="notif-badge">
                     {unreadCount > 9 ? '9+' : unreadCount}

@@ -1,22 +1,21 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
-  const [resetLink, setResetLink] = useState('');
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post('http://localhost:3001/api/auth/forgot-password', {
+      const res = await axios.post(window.__TRAVELNEST_API_URL__ + '/api/auth/forgot-password', {
         email
       });
 
+      if (res.data.resetToken) return navigate(`/reset-password/${res.data.resetToken}`);
       setMessage(res.data.message || 'Check your email');
-      if (res.data.resetLink) {
-        setResetLink(res.data.resetLink);
-      }
     } catch (err) {
       setMessage(err.response?.data?.error || 'Something went wrong');
     }
@@ -35,18 +34,11 @@ export default function ForgotPassword() {
           style={{ width: '100%', padding: 10, marginBottom: 12 }}
         />
         <button type="submit" style={{ width: '100%', padding: 10 }}>
-          Send Reset Link
+          Continue
         </button>
       </form>
 
       {message && <p style={{ marginTop: 15 }}>{message}</p>}
-
-      {resetLink && (
-        <div style={{ marginTop: 15 }}>
-          <p>Development-only reset link:</p>
-          <a href={resetLink}>{resetLink}</a>
-        </div>
-      )}
     </div>
   );
 }

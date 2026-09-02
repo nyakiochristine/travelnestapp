@@ -1,11 +1,43 @@
 // routes/chat.js
 const express = require('express');
+const fs = require('fs');
+const path = require('path');
+const multer = require('multer');
 const router = express.Router();
 const mongoose = require('mongoose');
 const { verifyToken } = require('../middleware/authMiddleware');
 const Conversation = require('../models/Conversation');  // ✅ singular
 const Message = require('../models/Message');
 const User = require('../models/User');
+
+const uploadsDir = path.join(__dirname, '..', 'uploads', 'messages');
+fs.mkdirSync(uploadsDir, { recursive: true });
+
+const storage = multer.diskStorage({
+  destination: (_req, _file, cb) => cb(null, uploadsDir),
+  filename: (_req, file, cb) => cb(null, `${Date.now()}-${file.originalname.replace(/\s+/g, '_')}`)
+});
+const upload = multer({ storage });
+
+function buildMessagePayload({ text, itineraryId, imageUrl }) {
+  const normalizedText = typeof text === 'string' ? text.trim() : '';
+  const normalizedImage = typeof imageUrl === 'string' ? imageUrl.trim() : '';
+  const normalizedItineraryId = itineraryId || null;
+
+  if (!normalizedText && !normalizedImage && !normalizedItineraryId) {
+    return {
+      valid: false,
+      error: 'Write a message or attach a picture before sending.'
+    };
+  }
+
+  return {
+    valid: true,
+    text: normalizedText,
+    image: normalizedImage || '',
+    itineraryId: normalizedItineraryId
+  };
+}
 
 /* 2.1 Create or get direct conversation between two users */
 router.post('/direct/:otherUserId', verifyToken, async (req, res) => {
@@ -105,9 +137,10 @@ router.get('/my', verifyToken, async (req, res) => {
 });
 
 /* 2.4 Send a message (text and/or itinerary) */
-router.post('/:conversationId/messages', verifyToken, async (req, res) => {
+router.post('/:conversationId/messages', verifyToken, upload.single('image'), async (req, res) => {
   try {
     const { text, itineraryId } = req.body;
+    const imageUrl = req.file ? `/uploads/messages/${req.file.filename}` : req.body.image;
     const convoId = req.params.conversationId;
 
     if (!mongoose.Types.ObjectId.isValid(convoId)) {
@@ -124,20 +157,27 @@ router.post('/:conversationId/messages', verifyToken, async (req, res) => {
       return res.status(403).json({ error: 'Not a member of this conversation' });
     }
 
-    if (!text?.trim() && !itineraryId) {
-      return res.status(400).json({ error: 'Write a message or share an itinerary' });
+    const payload = buildMessagePayload({
+      text,
+      itineraryId,
+      imageUrl
+    });
+
+    if (!payload.valid) {
+      return res.status(400).json({ error: payload.error });
     }
+
     const message = await Message.create({
       conversation: convoId,
       sender: req.userId,
-      text: text?.trim() || '',
-      itinerary: itineraryId || null
+      text: payload.text,
+      image: payload.image,
+      itinerary: payload.itineraryId || null
     });
 
     convo.updatedAt = new Date();
     await convo.save();
 
-    // For newer Mongoose you can repopulate like this:
     const populated = await Message.findById(message._id)
       .populate('sender', 'name profilePicture')
       .populate('itinerary', 'title tripCoverImage');
@@ -236,3 +276,4 @@ router.post('/share-itinerary', verifyToken, async (req, res) => {
 });
 
 module.exports = router;
+module.exports.buildMessagePayload = buildMessagePayload;

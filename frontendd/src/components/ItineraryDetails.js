@@ -28,7 +28,7 @@ function ItineraryDetails() {
         setError('');
 
         const res = await fetch(
-          `http://localhost:3001/api/itineraries/${id}`,
+          `${window.__TRAVELNEST_API_URL__}/api/itineraries/${id}`,
           {
             headers: { Authorization: `Bearer ${user.token}` },
           }
@@ -76,7 +76,7 @@ function ItineraryDetails() {
       <header className="itinerary-details-header">
         {itinerary.tripCoverImage && (
           <img
-            src={`http://localhost:3001${itinerary.tripCoverImage}`}
+            src={`${window.__TRAVELNEST_API_URL__}${itinerary.tripCoverImage}`}
             alt={itinerary.title}
             className="details-cover"
           />
@@ -103,7 +103,7 @@ function ItineraryDetails() {
                 {place.images.map((img, i) => (
                   <img
                     key={i}
-                    src={`http://localhost:3001${img}`}
+                    src={`${window.__TRAVELNEST_API_URL__}${img}`}
                     alt={place.name || `Place ${i + 1}`}
                   />
                 ))}

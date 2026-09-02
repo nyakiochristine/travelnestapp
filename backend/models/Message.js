@@ -18,6 +18,11 @@ const MessageSchema = new mongoose.Schema(
       default: ''
     },
 
+    image: {
+      type: String,
+      default: ''
+    },
+
     // Optional: share an itinerary inside a message
     itinerary: {
       type: mongoose.Schema.Types.ObjectId,

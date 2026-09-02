@@ -15,7 +15,7 @@ function Login() {
     e.preventDefault();
     try {
       setSubmitting(true); setFeedback('');
-      const response = await fetch('http://localhost:3001/api/auth/login', {
+      const response = await fetch(window.__TRAVELNEST_API_URL__ + '/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),

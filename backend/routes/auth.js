@@ -4,14 +4,16 @@ const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const PasswordReset = require('../models/PasswordReset');
-const { sendEmail, isEmailConfigured } = require('../utils/email');
+const { sendEmail } = require('../utils/email');
 
 const router = express.Router();
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const JWT_SECRET = process.env.JWT_SECRET || 'your_jwt_secret';
+const JWT_SECRET = process.env.JWT_SECRET;
 const clientUrl = process.env.CLIENT_URL || 'http://localhost:3000';
 const validPassword = password => typeof password === 'string' && password.length >= 8 && /[A-Za-z]/.test(password) && /\d/.test(password);
 const newToken = () => crypto.randomBytes(32).toString('hex');
+const requireEmailVerification = process.env.REQUIRE_EMAIL_VERIFICATION === 'true';
+const allowDirectPasswordReset = process.env.DIRECT_PASSWORD_RESET === 'true' || process.env.NODE_ENV !== 'production';
 
 router.post('/register', async (req, res) => {
   try {
@@ -22,12 +24,15 @@ router.post('/register', async (req, res) => {
     if (!EMAIL_PATTERN.test(email || '')) return res.status(400).json({ error: 'Enter a valid email address.' });
     if (!validPassword(password)) return res.status(400).json({ error: 'Password must be at least 8 characters and contain a letter and a number.' });
     if (await User.exists({ email })) return res.status(409).json({ error: 'An account with this email already exists. Please log in.' });
+    if (!requireEmailVerification) {
+      await User.create({ name, email, password, isEmailVerified: true });
+      return res.status(201).json({ message: 'Account created. You can now log in.' });
+    }
     const verificationToken = newToken();
     await User.create({ name, email, password, isEmailVerified: false, verificationTokenHash: crypto.createHash('sha256').update(verificationToken).digest('hex'), verificationExpiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000) });
     const verificationLink = `${clientUrl}/verify-email/${verificationToken}`;
     const delivered = await sendEmail({ to: email, subject: 'Verify your TravelNest email', text: `Welcome to TravelNest. Verify your email: ${verificationLink}`, html: `<p>Welcome to TravelNest.</p><p><a href="${verificationLink}">Verify your email</a></p><p>This link expires in 24 hours.</p>` });
-    if (!delivered) console.log('Email verification link:', verificationLink);
-    res.status(201).json({ message: delivered ? 'Account created. Check your email to verify your account.' : 'Account created. Email delivery is not configured yet.', ...(isEmailConfigured() ? {} : { verificationLink }) });
+    res.status(201).json({ message: delivered ? 'Account created. Check your email to verify your account.' : 'Account created. Please contact support to verify your email.' });
   } catch (error) { res.status(500).json({ error: 'Could not create your account.' }); }
 });
 
@@ -62,10 +67,10 @@ router.post('/forgot-password', async (req, res) => {
   await PasswordReset.deleteMany({ userId: user._id });
   const token = newToken();
   await PasswordReset.create({ userId: user._id, token: crypto.createHash('sha256').update(token).digest('hex'), expiresAt: new Date(Date.now() + 30 * 60 * 1000) });
+  if (allowDirectPasswordReset) return res.json({ message: 'Choose a new password.', resetToken: token });
   const resetLink = `${clientUrl}/reset-password/${token}`;
   const delivered = await sendEmail({ to: email, subject: 'Reset your TravelNest password', text: `Reset your TravelNest password: ${resetLink}`, html: `<p>Reset your TravelNest password.</p><p><a href="${resetLink}">Reset password</a></p><p>This link expires in 30 minutes.</p>` });
-  if (!delivered) console.log('Password reset link:', resetLink);
-  res.json({ message: delivered ? message : 'Email delivery is not configured yet.', ...(isEmailConfigured() ? {} : { resetLink }) });
+  res.json({ message: delivered ? message : 'Password reset is unavailable right now.' });
 });
 
 router.post('/reset-password/:token', async (req, res) => {

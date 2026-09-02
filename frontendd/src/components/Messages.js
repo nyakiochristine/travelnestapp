@@ -12,6 +12,7 @@ function Messages() {
   const [activeConvo, setActiveConvo] = useState(null);
   const [messages, setMessages] = useState([]);
   const [text, setText] = useState('');
+  const [selectedImage, setSelectedImage] = useState(null);
   const [travelers, setTravelers] = useState([]);
   const [showNewMessage, setShowNewMessage] = useState(false);
   const [travelerQuery, setTravelerQuery] = useState('');
@@ -76,24 +77,29 @@ function Messages() {
 
   const handleSend = async (e) => {
     e.preventDefault();
-    if (!activeConvo || !text.trim()) return;
+    if (!activeConvo || (!text.trim() && !selectedImage)) return;
 
     setError('');
+
+    const formData = new FormData();
+    if (text.trim()) formData.append('text', text.trim());
+    if (selectedImage) formData.append('image', selectedImage);
+
     const res = await fetch(
       `${window.__TRAVELNEST_API_URL__}/api/chat/${activeConvo._id}/messages`,
       {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`
         },
-        body: JSON.stringify({ text: text.trim() })
+        body: formData
       }
     );
     if (res.ok) {
       const msg = await res.json();
       setMessages(prev => [...prev, msg]);
       setText('');
+      setSelectedImage(null);
       setConversations(previous => previous.map(conversation => conversation._id === activeConvo._id ? { ...conversation, latestMessage: msg, updatedAt: new Date().toISOString() } : conversation).sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt)));
     } else setError('Your message could not be sent. Please try again.');
   };
@@ -174,6 +180,18 @@ function Messages() {
                       <div className="msg-text">{m.text}</div>
                     )}
 
+                    {m.image && (
+                      <img
+                        src={
+                          m.image.startsWith('http')
+                            ? m.image
+                            : `${window.__TRAVELNEST_API_URL__}${m.image}`
+                        }
+                        alt="Attachment"
+                        className="msg-image"
+                      />
+                    )}
+
                     {m.itinerary && (
                       <Link
                         to={`/itineraries/${m.itinerary._id}`}
@@ -207,13 +225,34 @@ function Messages() {
             </div>
 
             <form className="chat-input-row" onSubmit={handleSend}>
-              <input
-                type="text"
-                placeholder="Write a message..."
-                value={text}
-                onChange={e => setText(e.target.value)}
-              />
-              <button type="submit">Send</button>
+              {selectedImage && (
+                <div className="chat-image-preview">
+                  <img
+                    src={URL.createObjectURL(selectedImage)}
+                    alt="Selected preview"
+                  />
+                  <button type="button" onClick={() => setSelectedImage(null)}>Remove</button>
+                </div>
+              )}
+
+              <div className="chat-input-actions">
+                <label className="attach-image-btn">
+                  Photo
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={e => setSelectedImage(e.target.files?.[0] || null)}
+                  />
+                </label>
+
+                <input
+                  type="text"
+                  placeholder="Write a message..."
+                  value={text}
+                  onChange={e => setText(e.target.value)}
+                />
+                <button type="submit">Send</button>
+              </div>
             </form>
           </>
         ) : (

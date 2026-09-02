@@ -447,5 +447,5 @@
   cursor: pointer;
 }
 
-/* Keep profile cards still—no hover overlay or lift effect. */
+/* Keep profile cards still, with no hover overlay or lift effect. */
 .itinerary-card:hover { transform: none; box-shadow: 0 8px 20px rgba(0,124,120,.08); border-color: #8fcfc1; }
