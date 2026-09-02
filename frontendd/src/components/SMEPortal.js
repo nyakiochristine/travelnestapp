@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import './Dashboard.css';
 
 const emptyForm = { name: '', location: '', lat: '', lng: '', category: 'Experience', type: 'attraction', region: '', tags: '', description: '', priceRange: '', estimatedDuration: '', openingHours: '', contactEmail: '', contactPhone: '', website: '', amenities: '' };
@@ -15,13 +15,17 @@ function SMEPortal({ token }) {
   const [form, setForm] = useState(emptyForm);
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(true);
-  const headers = { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` };
-  const load = async () => {
+  const load = useCallback(async () => {
     setLoading(true);
-    try { const response = await fetch(`${api}/my`, { headers }); setData(await readJson(response)); }
+    try {
+      const headers = { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` };
+      const response = await fetch(`${api}/my`, { headers });
+      setData(await readJson(response));
+    }
     catch (error) { setMessage(error.message); } finally { setLoading(false); }
-  };
-  useEffect(() => { load(); }, [token]);
+  }, [token]);
+  const headers = { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` };
+  useEffect(() => { load(); }, [load]);
   const requestAccess = async () => {
     const response = await fetch(`${api}/business-application`, { method: 'POST', headers }); const result = await response.json();
     setMessage(result.message || result.error); if (response.ok) load();

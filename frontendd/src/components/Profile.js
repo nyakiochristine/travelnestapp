@@ -1,5 +1,5 @@
 // src/components/Profile.js
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useCallback } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from './AuthContext';
 import './Profile.css';
@@ -21,8 +21,7 @@ function Profile() {
   const [isFollowing, setIsFollowing] = useState(false);
   const [followersCount, setFollowersCount] = useState(0);
 
-  const isOwnProfile = () =>
-    currentUser && currentUser.user?._id === userId;
+  const ownProfile = Boolean(currentUser && currentUser.user?._id === userId);
 
   const getToken = () =>
     currentUser?.token || localStorage.getItem('token');
@@ -30,14 +29,14 @@ function Profile() {
   useEffect(() => {
     fetchProfile();
     fetchStats();
-  }, [userId]);
+  }, [fetchProfile, fetchStats]);
 
   useEffect(() => {
-    if (isOwnProfile()) {
+    if (ownProfile) {
       fetchUserItineraries();
       fetchSavedItineraries();
     }
-  }, [userId, currentUser]);
+  }, [fetchSavedItineraries, fetchUserItineraries, ownProfile]);
 
   useEffect(() => {
     setStats(prev => ({
@@ -46,7 +45,7 @@ function Profile() {
     }));
   }, [itineraries]);
 
-  const fetchProfile = async () => {
+  const fetchProfile = useCallback(async () => {
     try {
       setLoading(true);
       setError('');
@@ -86,9 +85,9 @@ function Profile() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [currentUser, userId]);
 
-  const fetchStats = async () => {
+  const fetchStats = useCallback(async () => {
     try {
       const token = getToken();
       const res = await fetch(
@@ -104,9 +103,9 @@ function Profile() {
     } catch (err) {
       console.error('Stats fetch error:', err);
     }
-  };
+  }, [currentUser, userId]);
 
-  const fetchUserItineraries = async () => {
+  const fetchUserItineraries = useCallback(async () => {
     try {
       const token = getToken();
       const res = await fetch(
@@ -122,9 +121,9 @@ function Profile() {
     } catch (err) {
       console.error('Itineraries fetch error:', err);
     }
-  };
+  }, [currentUser]);
 
-  const fetchSavedItineraries = async () => {
+  const fetchSavedItineraries = useCallback(async () => {
     try {
       const token = getToken();
       const res = await fetch(
@@ -140,7 +139,7 @@ function Profile() {
     } catch (err) {
       console.error('Saved itineraries fetch error:', err);
     }
-  };
+  }, [currentUser]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -226,8 +225,6 @@ function Profile() {
   if (loading) return <div className="loading">Loading profile...</div>;
   if (error) return <div className="error">{error}</div>;
   if (!profile) return <div className="error">Profile not found</div>;
-
-  const ownProfile = isOwnProfile();
 
   return (
     <div className="profile-container">

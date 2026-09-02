@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useCallback } from 'react';
 import { AuthContext } from './AuthContext';
 import TravelJournal from './CreateItinerary';
 import EditItinerary from './EditItinerary';
@@ -18,7 +18,7 @@ function Dashboard({ initialTab = 'planner' }) {
   const [message, setMessage] = useState('');
 
 
-  const fetchItineraries = async () => {
+  const fetchItineraries = useCallback(async () => {
     if (!token) return;
     try {
       // Changed URL to match the 'my-itineraries' route
@@ -33,12 +33,12 @@ function Dashboard({ initialTab = 'planner' }) {
         setItineraries(Array.isArray(data) ? data : []);
       }
     } catch (err) { console.error('Dashboard fetch failed:', err); }
-  };
+  }, [token]);
 
 
   useEffect(() => { 
     fetchItineraries(); 
-  }, [token]);
+  }, [fetchItineraries]);
 
   const deleteItinerary = async (itinerary) => {
     if (!window.confirm(`Delete “${itinerary.title}”? This cannot be undone.`)) return;
