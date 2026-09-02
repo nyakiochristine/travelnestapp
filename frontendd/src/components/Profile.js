@@ -23,27 +23,10 @@ function Profile() {
 
   const ownProfile = Boolean(currentUser && currentUser.user?._id === userId);
 
-  const getToken = () =>
-    currentUser?.token || localStorage.getItem('token');
-
-  useEffect(() => {
-    fetchProfile();
-    fetchStats();
-  }, [fetchProfile, fetchStats]);
-
-  useEffect(() => {
-    if (ownProfile) {
-      fetchUserItineraries();
-      fetchSavedItineraries();
-    }
-  }, [fetchSavedItineraries, fetchUserItineraries, ownProfile]);
-
-  useEffect(() => {
-    setStats(prev => ({
-      ...prev,
-      itineraryCount: itineraries.length,
-    }));
-  }, [itineraries]);
+  const getToken = useCallback(
+    () => currentUser?.token || localStorage.getItem('token'),
+    [currentUser]
+  );
 
   const fetchProfile = useCallback(async () => {
     try {
@@ -85,7 +68,7 @@ function Profile() {
     } finally {
       setLoading(false);
     }
-  }, [currentUser, userId]);
+  }, [currentUser, getToken, userId]);
 
   const fetchStats = useCallback(async () => {
     try {
@@ -103,7 +86,7 @@ function Profile() {
     } catch (err) {
       console.error('Stats fetch error:', err);
     }
-  }, [currentUser, userId]);
+  }, [getToken, userId]);
 
   const fetchUserItineraries = useCallback(async () => {
     try {
@@ -121,7 +104,7 @@ function Profile() {
     } catch (err) {
       console.error('Itineraries fetch error:', err);
     }
-  }, [currentUser]);
+  }, [getToken]);
 
   const fetchSavedItineraries = useCallback(async () => {
     try {
@@ -139,7 +122,26 @@ function Profile() {
     } catch (err) {
       console.error('Saved itineraries fetch error:', err);
     }
-  }, [currentUser]);
+  }, [getToken]);
+
+  useEffect(() => {
+    fetchProfile();
+    fetchStats();
+  }, [fetchProfile, fetchStats]);
+
+  useEffect(() => {
+    if (ownProfile) {
+      fetchUserItineraries();
+      fetchSavedItineraries();
+    }
+  }, [fetchSavedItineraries, fetchUserItineraries, ownProfile]);
+
+  useEffect(() => {
+    setStats(prev => ({
+      ...prev,
+      itineraryCount: itineraries.length,
+    }));
+  }, [itineraries]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
