@@ -4,6 +4,23 @@ TravelNest is a travel-planning and community platform for discovering Kenyan ex
 
 It includes an itinerary planner, social travel feed, messaging, profiles, business listings, moderation tools, and email-based account verification.
 
+## Live demo
+
+- Website: https://travelnestapp.vercel.app/
+- API health check: https://travelnest-api-oi5o.onrender.com/
+
+The React frontend is deployed on Vercel, the Express API is hosted on Render, and production data is stored in MongoDB Atlas.
+
+## Screenshots
+
+Add screenshots to `docs/screenshots/` using these filenames:
+
+![TravelNest home page](docs/screenshots/landingpage1.png)
+
+![TravelNest dashboard](docs/screenshots/builditinerary.png)
+
+![TravelNest itinerary planner](docs/screenshots/additinerary.png)
+
 ## Features
 
 - Create, edit, save, and share itineraries
@@ -149,9 +166,9 @@ For a typical deployment, host the React frontend on Vercel or Netlify and the E
 ## Deploy on Vercel and Render
 
 1. Create a MongoDB Atlas database and add its connection string as `MONGO_URI` in Render.
-2. Create a Render Blueprint from this repository. It uses `render.yaml` to deploy the `backend` directory. Set `CLIENT_URL` to your final Vercel URL and fill in the SMTP values before allowing public registrations.
-3. Create a Vercel project with `frontendd` as its root directory. Add `REACT_APP_API_URL` with the public Render API URL, for example `https://travelnest-api.onrender.com`. Redeploy after setting it.
-4. Copy the final Vercel URL into Render's `CLIENT_URL`. For preview deployments, separate permitted origins with commas.
+2. Create a Render Web Service using `backend` as the root directory, `npm ci` as the build command, and `npm start` as the start command. Set `CLIENT_URL` to `https://travelnestapp.vercel.app` and fill in the SMTP values before allowing public registrations.
+3. Create a Vercel project with `frontendd` as its root directory. Add `REACT_APP_API_URL=https://travelnest-api-oi5o.onrender.com` and redeploy after setting it.
+4. For preview deployments, separate permitted origins in Render's `CLIENT_URL` value with commas.
 
 The frontend reads `REACT_APP_API_URL` at build time. The default remains `http://localhost:3001` for local development.
 
