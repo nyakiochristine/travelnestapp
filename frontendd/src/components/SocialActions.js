@@ -14,7 +14,7 @@ function SocialActions({ itineraryId, initialLikes, initialLiked, initialComment
 
   const handleLikeToggle = async () => {
     try {
-      const res = await fetch(`http://localhost:3001/api/itineraries/${itineraryId}/like`, {
+      const res = await fetch(`${window.__TRAVELNEST_API_URL__}/api/itineraries/${itineraryId}/like`, {
         method: 'POST',
         headers: { Authorization: `Bearer ${token}` }
       });
@@ -33,7 +33,7 @@ function SocialActions({ itineraryId, initialLikes, initialLiked, initialComment
     if (!commentText.trim()) return;
     setIsSubmittingComment(true);
     try {
-      const res = await fetch(`http://localhost:3001/api/itineraries/${itineraryId}/comments`, {
+      const res = await fetch(`${window.__TRAVELNEST_API_URL__}/api/itineraries/${itineraryId}/comments`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -55,7 +55,7 @@ function SocialActions({ itineraryId, initialLikes, initialLiked, initialComment
 
   const handleRate = async (value) => {
     try {
-      const res = await fetch(`http://localhost:3001/api/itineraries/${itineraryId}/rate`, {
+      const res = await fetch(`${window.__TRAVELNEST_API_URL__}/api/itineraries/${itineraryId}/rate`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

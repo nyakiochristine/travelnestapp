@@ -19,7 +19,7 @@ export default function ResetPassword() {
 
     try {
       const res = await axios.post(
-        `http://localhost:3001/api/auth/reset-password/${token}`,
+        `${window.__TRAVELNEST_API_URL__}/api/auth/reset-password/${token}`,
         { password }
       );
 

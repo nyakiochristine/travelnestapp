@@ -16,7 +16,7 @@ function PublicItineraries() {
   useEffect(() => {
     async function fetchPublicItineraries() {
       try {
-        const response = await fetch('http://localhost:3001/api/itineraries/public');
+        const response = await fetch(window.__TRAVELNEST_API_URL__ + '/api/itineraries/public');
         if (response.ok) {
           const data = await response.json();
           setItineraries(data);
@@ -47,7 +47,7 @@ function PublicItineraries() {
               {it.tripCoverImage && (
                 <img
                   className="public-itinerary-cover"
-                  src={`http://localhost:3001${it.tripCoverImage}`}
+                  src={`${window.__TRAVELNEST_API_URL__}${it.tripCoverImage}`}
                   alt={it.title}
                 />
               )}
@@ -68,7 +68,7 @@ function PublicItineraries() {
                     {place.images && place.images.length > 0 && (
                       <img
                         className="place-thumbnail"
-                        src={`http://localhost:3001${place.images[0]}`}
+                        src={`${window.__TRAVELNEST_API_URL__}${place.images[0]}`}
                         alt={place.name}
                       />
                     )}

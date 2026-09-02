@@ -5,7 +5,7 @@ export default function VerifyEmail() {
   const { token } = useParams();
   const [message, setMessage] = useState('Verifying your email…');
   useEffect(() => {
-    fetch(`http://localhost:3001/api/auth/verify-email/${token}`)
+    fetch(`${window.__TRAVELNEST_API_URL__}/api/auth/verify-email/${token}`)
       .then(async response => setMessage((await response.json()).message || (response.ok ? 'Email verified.' : 'Verification failed.')))
       .catch(() => setMessage('Could not connect to the server.'));
   }, [token]);

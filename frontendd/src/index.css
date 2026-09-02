@@ -50,3 +50,46 @@ a { color: inherit; }
 .user-avatar, .profile-picture { border-color: var(--sun) !important; }
 .activity-cost { color: var(--coral) !important; }
 @media (max-width: 720px) { .dashboard-container, .itineraries-feed, .profile-container, .messages-layout, .public-itineraries-container, .itinerary-details { margin-top: 1.25rem !important; } }
+
+/* Refined shared application language. These overrides unify older component styles. */
+:root { --ink: #173a37; --ocean: #136f69; --ocean-deep: #0e504c; --surface: #fff; --line: #dce7e4; --muted: #627572; --shadow: 0 10px 28px rgba(18, 63, 60, .08); }
+body { background: #f7f9f8; letter-spacing: 0; }
+button, input, textarea, select { border-radius: 6px !important; }
+button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible { outline: 3px solid rgba(19,111,105,.28); outline-offset: 2px; }
+.navbar { position: sticky; top: 0; width: 100%; min-height: 58px; margin: 0; padding: .7rem 5vw; border-radius: 0; box-shadow: 0 1px 0 rgba(255,255,255,.12); }
+.nav-brand a { font-family: 'Fraunces', Georgia, serif; font-size: 1.35rem; letter-spacing: 0; }
+.nav-links { gap: .9rem; }
+.nav-links a { border-radius: 0; padding: .35rem 0; }
+.nav-links a:hover { background: transparent; color: #c9e8e1; }
+.nav-profile-link, .logout-btn { border-radius: 5px !important; }
+.notif-bell { width: auto; height: 32px; padding: 0 .2rem; border-radius: 0; background: transparent; font-size: .9rem; }
+.notif-bell:hover { background: transparent; color: #c9e8e1; transform: none; }
+.notif-badge { border-radius: 4px; background: #ca5a3d !important; }
+.notif-dropdown { border-radius: 7px; box-shadow: 0 12px 30px rgba(18,63,60,.2); }
+.dashboard-container, .itineraries-feed, .profile-container, .messages-layout, .public-itineraries-container, .itinerary-details { max-width: 1100px; }
+.dashboard-header { padding: 2.8rem 0 1.5rem; text-align: left; }
+.dashboard-title { font-family: 'Fraunces', Georgia, serif; font-size: clamp(2rem, 3vw, 3rem); letter-spacing: 0; }
+.tab-navigation { justify-content: flex-start; gap: 0; margin-bottom: 1.5rem; border-bottom: 1px solid var(--line); }
+.tab-navigation button { padding: .7rem .95rem; border-radius: 0 !important; background: transparent; color: var(--muted); font-weight: 600; }
+.tab-navigation button.active { background: transparent !important; color: var(--ocean-deep) !important; box-shadow: inset 0 -2px 0 var(--ocean) !important; }
+.tool-display-area { max-width: 820px; margin-left: 0; }
+.tool-card, .feed-card, .profile-header, .profile-edit-form, .convo-list, .chat-panel, .public-itinerary-card, .itinerary-details, .modal-content { border-radius: 8px !important; box-shadow: var(--shadow) !important; }
+.tool-card { padding: clamp(1.25rem, 3vw, 2rem); }
+.planner-v2, .create-itinerary-form { border-radius: 8px !important; }
+.planner-v2 .tool-header h3, .create-itinerary-title, .feed-intro h1, .featured-heading h2 { letter-spacing: 0 !important; }
+.interest-chips button, .planner-promise, .place-pills span, .feed-btn, .comment-input-row input, .comment-input-row button, .share-chat-btn, .share-cancel-btn, .share-confirm-btn { border-radius: 5px !important; }
+.feed-intro { margin-top: 2.8rem; }
+.feed-card { margin-bottom: 1.25rem; border-color: var(--line) !important; }
+.social-trip-card .feed-cover { height: min(42vw, 340px); }
+.social-trip-card .feed-actions { padding: .6rem 1.25rem; }
+.social-trip-card .feed-btn:hover, .social-trip-card .feed-btn.is-active { background: #e4f1ee; color: var(--ocean-deep); }
+.place-pills span { background: #eef5f3; color: #326660; font-weight: 600; }
+.login-container { background: #f3f7f6; }
+.login-form { border-radius: 8px; box-shadow: var(--shadow); }
+.input-field { border-radius: 6px; }
+.tool-form input, .tool-form select, .tool-form textarea { font-size: 1rem; }
+.planner-row label, .planner-form fieldset, .field-label { font-size: .92rem; }
+.trip-preview-body > p:last-child, .trip-preview-author { font-size: .96rem; }
+.feed-intro p, .trip-content p { font-size: 1.02rem; }
+.trip-author small, .trip-date, .social-counts { font-size: .9rem; }
+@media (max-width: 720px) { .navbar { padding: .65rem 1rem; align-items: flex-start; }.nav-links { gap: .65rem; flex-wrap: wrap; justify-content: flex-end; }.nav-links a, .nav-utility-link { font-size: .82rem; }.dashboard-header { padding-top: 1.8rem; }.tab-navigation { overflow-x: auto; justify-content: flex-start; }.tab-navigation button { flex: 0 0 auto; padding: .7rem .75rem; }.social-trip-card .feed-cover { height: 230px; } }

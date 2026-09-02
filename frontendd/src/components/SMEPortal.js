@@ -3,6 +3,12 @@ import './Dashboard.css';
 
 const emptyForm = { name: '', location: '', lat: '', lng: '', category: 'Experience', type: 'attraction', region: '', tags: '', description: '', priceRange: '', estimatedDuration: '', openingHours: '', contactEmail: '', contactPhone: '', website: '', amenities: '' };
 const api = window.__TRAVELNEST_API_URL__ + '/api/attractions';
+const readJson = async response => {
+  const isJson = response.headers.get('content-type')?.includes('application/json');
+  const body = isJson ? await response.json() : {};
+  if (!response.ok) throw new Error(body.error || 'The business workspace is unavailable. Check that the API server is running.');
+  return body;
+};
 
 function SMEPortal({ token }) {
   const [data, setData] = useState({ role: '', verificationStatus: '', listings: [] });
@@ -12,7 +18,7 @@ function SMEPortal({ token }) {
   const headers = { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` };
   const load = async () => {
     setLoading(true);
-    try { const response = await fetch(`${api}/my`, { headers }); if (!response.ok) throw new Error('Could not load your business workspace.'); setData(await response.json()); }
+    try { const response = await fetch(`${api}/my`, { headers }); setData(await readJson(response)); }
     catch (error) { setMessage(error.message); } finally { setLoading(false); }
   };
   useEffect(() => { load(); }, [token]);

@@ -132,7 +132,7 @@ function EditItinerary({ itinerary, onClose, onSave }) {
 
     try {
       console.log('Submitting edit with FormData'); // Debug log
-      const res = await fetch(`http://localhost:3001/api/itineraries/${itinerary._id}`, {
+      const res = await fetch(`${window.__TRAVELNEST_API_URL__}/api/itineraries/${itinerary._id}`, {
         method: 'PUT',
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`

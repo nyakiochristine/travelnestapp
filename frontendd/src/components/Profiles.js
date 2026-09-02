@@ -11,7 +11,7 @@ const Profiles = () => {
 
   useEffect(() => {
     // Fetch all users from backend
-    fetch('http://localhost:3001/api/users', { headers: { Authorization: `Bearer ${user?.token}` } })
+    fetch(window.__TRAVELNEST_API_URL__ + '/api/users', { headers: { Authorization: `Bearer ${user?.token}` } })
       .then(res => res.json())
       .then(data => setUsers(Array.isArray(data) ? data : []))
       .catch(err => console.error('Profiles fetch error:', err));
@@ -27,7 +27,7 @@ const Profiles = () => {
             to={`/profile/${profile._id}`}
             className="profile-card"
           >
-            {profile.profilePicture?.startsWith('/uploads/') ? <img src={`http://localhost:3001${profile.profilePicture}`} alt={profile.name} /> : <div className="profile-initial" aria-hidden="true">{profile.name?.charAt(0)?.toUpperCase() || 'T'}</div>}
+            {profile.profilePicture?.startsWith('/uploads/') ? <img src={`${window.__TRAVELNEST_API_URL__}${profile.profilePicture}`} alt={profile.name} /> : <div className="profile-initial" aria-hidden="true">{profile.name?.charAt(0)?.toUpperCase() || 'T'}</div>}
             <div className="profile-card-copy"><h3>{profile.name}</h3><p className="profile-location">{profile.location || 'Kenya traveller'}</p><p>{profile.bio || 'Building their next great journey.'}</p><span>View profile →</span></div>
           </Link>
         ))}
