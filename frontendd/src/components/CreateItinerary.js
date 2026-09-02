@@ -159,7 +159,7 @@ function CreateItinerary({ onCreate }) {
       });
     });
 
-    const response = await fetch('http://localhost:3001/api/itineraries', {
+    const response = await fetch(window.__TRAVELNEST_API_URL__ + '/api/itineraries', {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${token}`,
