@@ -89,6 +89,8 @@ npm run seed
 
 ## Email setup
 
+Email verification and reset delivery are temporarily disabled by default so the app can be demonstrated without SMTP. Set `REQUIRE_EMAIL_VERIFICATION=true` and `DIRECT_PASSWORD_RESET=false` when you are ready to enable the email flow below.
+
 TravelNest sends verification and password-reset emails through SMTP. Add these values to `backend/.env`:
 
 ```env
@@ -106,9 +108,9 @@ For Gmail, use a Google App Password rather than your normal Gmail password. Whe
 
 There are three roles:
 
-- `traveller` — plans and shares trips
-- `business` — can request verified business access and submit listings
-- `admin` — reviews business access, listings, and traveller suggestions
+- `traveller`: plans and shares trips
+- `business`: can request verified business access and submit listings
+- `admin`: reviews business access, listings, and traveller suggestions
 
 To make an existing user an admin locally:
 
@@ -144,6 +146,15 @@ Before deploying:
 
 For a typical deployment, host the React frontend on Vercel or Netlify and the Express API on Render or Railway.
 
+## Deploy on Vercel and Render
+
+1. Create a MongoDB Atlas database and add its connection string as `MONGO_URI` in Render.
+2. Create a Render Blueprint from this repository. It uses `render.yaml` to deploy the `backend` directory. Set `CLIENT_URL` to your final Vercel URL and fill in the SMTP values before allowing public registrations.
+3. Create a Vercel project with `frontendd` as its root directory. Add `REACT_APP_API_URL` with the public Render API URL, for example `https://travelnest-api.onrender.com`. Redeploy after setting it.
+4. Copy the final Vercel URL into Render's `CLIENT_URL`. For preview deployments, separate permitted origins with commas.
+
+The frontend reads `REACT_APP_API_URL` at build time. The default remains `http://localhost:3001` for local development.
+
 ## Project structure
 
 ```text
@@ -152,4 +163,3 @@ travelnestapp/
 ├── frontendd/    # React user interface
 └── README.md
 ```
-
