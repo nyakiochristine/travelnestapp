@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import './Dashboard.css';
 
 const emptyForm = { name: '', location: '', lat: '', lng: '', category: 'Experience', type: 'attraction', region: '', tags: '', description: '', priceRange: '', estimatedDuration: '', openingHours: '', contactEmail: '', contactPhone: '', website: '', amenities: '' };
-const api = 'http://localhost:3001/api/attractions';
+const api = window.__TRAVELNEST_API_URL__ + '/api/attractions';
 
 function SMEPortal({ token }) {
   const [data, setData] = useState({ role: '', verificationStatus: '', listings: [] });

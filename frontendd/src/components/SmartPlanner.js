@@ -9,12 +9,12 @@ function SmartPlanner({ token, onCreated }) {
   const [result, setResult] = useState(null);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  useEffect(() => { fetch('http://localhost:3001/api/attractions').then(r => r.json()).then(data => setAttractions(Array.isArray(data) ? data : [])).catch(() => setError('Could not load destinations.')); }, []);
+  useEffect(() => { fetch(window.__TRAVELNEST_API_URL__ + '/api/attractions').then(r => r.json()).then(data => setAttractions(Array.isArray(data) ? data : [])).catch(() => setError('Could not load destinations.')); }, []);
   const toggleInterest = interest => setForm(current => ({ ...current, interests: current.interests.includes(interest) ? current.interests.filter(value => value !== interest) : [...current.interests, interest] }));
   const generate = async event => {
     event.preventDefault(); setLoading(true); setError('');
     try {
-      const response = await fetch('http://localhost:3001/api/smart-planner/generate', { method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` }, body: JSON.stringify(form) });
+      const response = await fetch(window.__TRAVELNEST_API_URL__ + '/api/smart-planner/generate', { method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` }, body: JSON.stringify(form) });
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || 'Could not generate your itinerary.');
       setResult(data); onCreated();
