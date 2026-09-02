@@ -53,7 +53,7 @@ function Profile() {
       const token = getToken();
 
       const res = await fetch(
-        `http://localhost:3001/api/users/${userId}`,
+        `${window.__TRAVELNEST_API_URL__}/api/users/${userId}`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -92,7 +92,7 @@ function Profile() {
     try {
       const token = getToken();
       const res = await fetch(
-        `http://localhost:3001/api/users/${userId}/stats`,
+        `${window.__TRAVELNEST_API_URL__}/api/users/${userId}/stats`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -110,7 +110,7 @@ function Profile() {
     try {
       const token = getToken();
       const res = await fetch(
-        'http://localhost:3001/api/itineraries/my-itineraries',
+        window.__TRAVELNEST_API_URL__ + '/api/itineraries/my-itineraries',
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -128,7 +128,7 @@ function Profile() {
     try {
       const token = getToken();
       const res = await fetch(
-        'http://localhost:3001/api/itineraries/saved',
+        window.__TRAVELNEST_API_URL__ + '/api/itineraries/saved',
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -158,7 +158,7 @@ function Profile() {
 
     try {
       const token = getToken();
-      const res = await fetch('http://localhost:3001/api/users', {
+      const res = await fetch(window.__TRAVELNEST_API_URL__ + '/api/users', {
         method: 'PUT',
         headers: { Authorization: `Bearer ${token}` },
         body: submitData,
@@ -187,7 +187,7 @@ function Profile() {
       const token = getToken();
       const endpoint = isFollowing ? 'unfollow' : 'follow';
       const res = await fetch(
-        `http://localhost:3001/api/users/${userId}/${endpoint}`,
+        `${window.__TRAVELNEST_API_URL__}/api/users/${userId}/${endpoint}`,
         {
           method: 'POST',
           headers: {
@@ -209,7 +209,7 @@ function Profile() {
     try {
       const token = getToken();
       const res = await fetch(
-        `http://localhost:3001/api/chat/direct/${userId}`,
+        `${window.__TRAVELNEST_API_URL__}/api/chat/direct/${userId}`,
         {
           method: 'POST',
           headers: { Authorization: `Bearer ${token}` },
@@ -235,7 +235,7 @@ function Profile() {
         <img
           src={
             profile.profilePicture
-              ? `http://localhost:3001${profile.profilePicture}`
+              ? `${window.__TRAVELNEST_API_URL__}${profile.profilePicture}`
               : '/default-avatar.png'
           }
           alt="Profile"
@@ -507,7 +507,7 @@ function Profile() {
                   >
                     {itinerary.tripCoverImage && (
                       <img
-                        src={`http://localhost:3001${itinerary.tripCoverImage}`}
+                        src={`${window.__TRAVELNEST_API_URL__}${itinerary.tripCoverImage}`}
                         alt={itinerary.title}
                         className="itinerary-cover"
                       />
@@ -551,7 +551,7 @@ function Profile() {
                 >
                   {itinerary.tripCoverImage && (
                     <img
-                      src={`http://localhost:3001${itinerary.tripCoverImage}`}
+                      src={`${window.__TRAVELNEST_API_URL__}${itinerary.tripCoverImage}`}
                       alt={itinerary.title}
                       className="itinerary-cover"
                     />

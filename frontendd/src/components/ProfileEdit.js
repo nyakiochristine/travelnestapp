@@ -59,7 +59,7 @@ const ProfileEdit = () => {
     try {
       console.log('🚀 Submitting profile update for user:', user?.user?._id);
 
-      const response = await fetch('http://localhost:3001/api/users', {
+      const response = await fetch(window.__TRAVELNEST_API_URL__ + '/api/users', {
         method: 'PUT',
         headers: {
           Authorization: `Bearer ${user.token}`
@@ -140,8 +140,8 @@ const ProfileEdit = () => {
             <img 
               src={
                 user.user.profilePicture 
-                  ? `http://localhost:3001${user.user.profilePicture}` 
-                  : 'http://localhost:3001/images/default-avatar.png'
+                  ? `${window.__TRAVELNEST_API_URL__}${user.user.profilePicture}`
+                  : window.__TRAVELNEST_API_URL__ + '/images/default-avatar.png'
               } 
               alt="Profile" 
               className="current-avatar"

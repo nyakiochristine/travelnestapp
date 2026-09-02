@@ -8,7 +8,7 @@
   --field-bg: #fbfefd;
 }
 
-/* Structured trip builder — teal, sand and coral only. */
+/* Structured trip builder using teal, sand and coral only. */
 .create-itinerary-container { max-width: 900px; margin: 3.5rem auto 5rem; }
 .create-itinerary-header { margin: 0 auto 2rem; max-width: 680px; text-align: center; }.create-itinerary-header > span { color: #e76f51; font-size: .8rem; font-weight: 800; letter-spacing: .1em; }.create-itinerary-header p { margin: .6rem 0 0; color: #5c7773; font-size: 1.05rem; }.create-itinerary-title { margin: .35rem 0 0; font-family: 'Fraunces', Georgia, serif; font-size: clamp(2.2rem, 4vw, 3.4rem); color: #005d5a; letter-spacing: -.04em; }
 .create-itinerary-form { padding: 2.2rem; border: 1px solid #cfe5df; border-radius: 20px; box-shadow: 0 14px 36px rgba(0,124,120,.1); }.field-label { display: block; color: #005d5a; font-size: .9rem; font-weight: 800; }.field-label .input-field { margin-top: .45rem; }

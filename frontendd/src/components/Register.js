@@ -7,19 +7,18 @@ function Register() {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
-  const [verificationLink, setVerificationLink] = useState('');
 
   const handleSubmit = async e => {
     e.preventDefault();
     setError('');
     if (password !== confirmPassword) return setError('Passwords do not match.');
-    const response = await fetch('http://localhost:3001/api/auth/register', {
+    const response = await fetch(window.__TRAVELNEST_API_URL__ + '/api/auth/register', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ name, email, password }), // send name, email, password
     });
     const data = await response.json();
-    if (response.ok) { setVerificationLink(data.verificationLink || ''); setError(data.message); } else setError(data.error || 'Registration failed.');
+    if (response.ok) setError(data.message); else setError(data.error || 'Registration failed.');
   };
 
   return (
@@ -54,7 +53,6 @@ function Register() {
         <button type="submit" className="btn-register">Register</button>
       </form>
       {error && <p className="auth-message">{error}</p>}
-      {verificationLink && <a className="auth-link" href={verificationLink}>Development only: verify email and continue</a>}
     </div>
   );
 }

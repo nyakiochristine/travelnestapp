@@ -23,9 +23,24 @@ const chatRoutes = require('./routes/chat');
 const app = express();
 const uploadsDir = path.join(__dirname, 'uploads');
 fs.mkdirSync(path.join(uploadsDir, 'profiles'), { recursive: true });
+fs.mkdirSync(path.join(uploadsDir, 'messages'), { recursive: true });
+
+if (!process.env.JWT_SECRET) {
+  throw new Error('JWT_SECRET is missing. Set a long, random value in your environment.');
+}
+
+const allowedOrigins = (process.env.CLIENT_URL || 'http://localhost:3000')
+  .split(',')
+  .map(origin => origin.trim())
+  .filter(Boolean);
 
 // Enable cross-origin requests
-app.use(cors());
+app.use(cors({
+  origin(origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) return callback(null, true);
+    return callback(new Error('Origin is not allowed by CORS'));
+  },
+}));
 app.use(express.json());
 
 // Make 'uploads' folder publicly available for image display

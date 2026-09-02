@@ -19,7 +19,7 @@ function Messages() {
 
   useEffect(() => {
     if (!token) return;
-    fetch('http://localhost:3001/api/chat/my', {
+    fetch(window.__TRAVELNEST_API_URL__ + '/api/chat/my', {
       headers: { Authorization: `Bearer ${token}` }
     })
       .then(r => r.json())
@@ -30,7 +30,7 @@ function Messages() {
   useEffect(() => {
     if (!token || !activeConvo) return;
     const timer = setInterval(async () => {
-      const response = await fetch(`http://localhost:3001/api/chat/${activeConvo._id}/messages`, { headers: { Authorization: `Bearer ${token}` } });
+      const response = await fetch(`${window.__TRAVELNEST_API_URL__}/api/chat/${activeConvo._id}/messages`, { headers: { Authorization: `Bearer ${token}` } });
       if (response.ok) setMessages(await response.json());
     }, 8000);
     return () => clearInterval(timer);
@@ -38,7 +38,7 @@ function Messages() {
 
   useEffect(() => {
     if (!token) return;
-    fetch('http://localhost:3001/api/users', { headers: { Authorization: `Bearer ${token}` } })
+    fetch(window.__TRAVELNEST_API_URL__ + '/api/users', { headers: { Authorization: `Bearer ${token}` } })
       .then(response => response.ok ? response.json() : [])
       .then(data => setTravelers(Array.isArray(data) ? data.filter(person => person._id !== user.user?._id) : []))
       .catch(console.error);
@@ -46,7 +46,7 @@ function Messages() {
 
   const startConversation = async (traveler) => {
     try {
-      const response = await fetch(`http://localhost:3001/api/chat/direct/${traveler._id}`, {
+      const response = await fetch(`${window.__TRAVELNEST_API_URL__}/api/chat/direct/${traveler._id}`, {
         method: 'POST',
         headers: { Authorization: `Bearer ${token}` }
       });
@@ -62,7 +62,7 @@ function Messages() {
     setActiveConvo(convo);
     try {
       const res = await fetch(
-        `http://localhost:3001/api/chat/${convo._id}/messages`,
+        `${window.__TRAVELNEST_API_URL__}/api/chat/${convo._id}/messages`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       if (res.ok) {
@@ -80,7 +80,7 @@ function Messages() {
 
     setError('');
     const res = await fetch(
-      `http://localhost:3001/api/chat/${activeConvo._id}/messages`,
+      `${window.__TRAVELNEST_API_URL__}/api/chat/${activeConvo._id}/messages`,
       {
         method: 'POST',
         headers: {
@@ -115,7 +115,7 @@ function Messages() {
           <div className="traveler-picker">
             <p>Start a conversation</p>
             <input value={travelerQuery} onChange={event => setTravelerQuery(event.target.value)} placeholder="Search travellers…" />
-            {travelers.filter(traveler => traveler.name.toLowerCase().includes(travelerQuery.toLowerCase())).length ? travelers.filter(traveler => traveler.name.toLowerCase().includes(travelerQuery.toLowerCase())).map(traveler => <button key={traveler._id} onClick={() => startConversation(traveler)}><img src={traveler.profilePicture ? `http://localhost:3001${traveler.profilePicture}` : '/default-avatar.png'} alt="" />{traveler.name}</button>) : <span>No other travellers yet.</span>}
+            {travelers.filter(traveler => traveler.name.toLowerCase().includes(travelerQuery.toLowerCase())).length ? travelers.filter(traveler => traveler.name.toLowerCase().includes(travelerQuery.toLowerCase())).map(traveler => <button key={traveler._id} onClick={() => startConversation(traveler)}><img src={traveler.profilePicture ? `${window.__TRAVELNEST_API_URL__}${traveler.profilePicture}` : '/default-avatar.png'} alt="" />{traveler.name}</button>) : <span>No other travellers yet.</span>}
           </div>
         )}
         {conversations.map(c => {
@@ -182,7 +182,7 @@ function Messages() {
                         <img
                           src={
                             m.itinerary.tripCoverImage
-                              ? `http://localhost:3001${m.itinerary.tripCoverImage}`
+                              ? `${window.__TRAVELNEST_API_URL__}${m.itinerary.tripCoverImage}`
                               : '/default-trip.png'
                           }
                           alt={m.itinerary.title}

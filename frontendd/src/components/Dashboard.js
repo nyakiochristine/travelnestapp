@@ -22,7 +22,7 @@ function Dashboard({ initialTab = 'planner' }) {
     if (!token) return;
     try {
       // Changed URL to match the 'my-itineraries' route
-      const response = await fetch('http://localhost:3001/api/itineraries/my-itineraries', {
+      const response = await fetch(window.__TRAVELNEST_API_URL__ + '/api/itineraries/my-itineraries', {
         headers: { 
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
@@ -43,7 +43,7 @@ function Dashboard({ initialTab = 'planner' }) {
   const deleteItinerary = async (itinerary) => {
     if (!window.confirm(`Delete “${itinerary.title}”? This cannot be undone.`)) return;
     try {
-      const response = await fetch(`http://localhost:3001/api/itineraries/${itinerary._id}`, {
+      const response = await fetch(`${window.__TRAVELNEST_API_URL__}/api/itineraries/${itinerary._id}`, {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${token}` }
       });
@@ -58,18 +58,16 @@ function Dashboard({ initialTab = 'planner' }) {
   return (
     <div className="dashboard-container">
       <header className="dashboard-header">
-        <h1 className="dashboard-title">
-          <span className="travel">Travel</span>
-          <span className="nest">Nest</span>
-        </h1>
-        <p>Welcome back, {user.user?.name || 'Traveler'}</p>
+        <p className="dashboard-kicker">Your travel space</p>
+        <h1 className="dashboard-title">Your workspace</h1>
+        <p>Plan a new route or pick up an itinerary you have already started.</p>
       </header>
 
       {/* --- TAB NAVIGATION --- */}
       <div className="tab-navigation">
-        <button className={activeTab === 'planner' ? 'active' : ''} onClick={() => setActiveTab('planner')}> ✨ AI Planner </button>
-        <button className={activeTab === 'journal' ? 'active' : ''} onClick={() => setActiveTab('journal')}>📖 Travel Journal</button>
-        <button className={activeTab === 'admin' ? 'active' : ''} onClick={() => setActiveTab('admin')}>🛠️ SME Portal</button>
+        <button className={activeTab === 'planner' ? 'active' : ''} onClick={() => setActiveTab('planner')}>Smart planner</button>
+        <button className={activeTab === 'journal' ? 'active' : ''} onClick={() => setActiveTab('journal')}>Trip builder</button>
+        <button className={activeTab === 'admin' ? 'active' : ''} onClick={() => setActiveTab('admin')}>Business workspace</button>
       </div>
 
       {/* --- ACTIVE TOOL AREA --- */}
@@ -83,17 +81,17 @@ function Dashboard({ initialTab = 'planner' }) {
 
       {/* --- HISTORY SECTION --- */}
       <section className="itinerary-list-section">
-        <h2>Your Personal Journeys</h2>
+        <div className="itinerary-section-heading"><div><p className="section-label">Your library</p><h2>Your itineraries</h2></div><span>{itineraries.length} saved</span></div>
         {message && <div className="dashboard-message">{message}<button onClick={() => setMessage('')}>×</button></div>}
         <div className="itinerary-grid">
           {itineraries.length === 0 ? (
-            <p className="empty-msg">You haven't created any journeys yet.</p>
+            <div className="workspace-empty"><p className="section-label">Nothing here yet</p><h3>Start with a place you want to see.</h3><p>Use the planner for a quick route, or build an itinerary stop by stop.</p><button className="btn-primary" onClick={() => setActiveTab('planner')}>Open smart planner</button></div>
           ) : (
             itineraries.map((it) => (
               <div key={it._id} className="itinerary-card">
                 <div className="card-header">
                   {it.tripCoverImage && (
-                    <img src={`http://localhost:3001${it.tripCoverImage}`} alt="Cover" />
+                    <img src={`${window.__TRAVELNEST_API_URL__}${it.tripCoverImage}`} alt="Cover" />
                   )}
                   <h3>{it.title}</h3>
                 </div>
