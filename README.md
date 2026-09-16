@@ -1,43 +1,81 @@
 # TravelNest
 
-TravelNest is a travel-planning and community platform for discovering Kenyan experiences, building itineraries, sharing routes, and connecting with other travellers.
+TravelNest is a full-stack travel-planning and community platform built around Kenyan travel. Travellers can discover places, build and share itineraries, connect with other travellers, and manage their travel profile. Businesses can submit listings for review, while administrators moderate community and marketplace content.
 
-It includes an itinerary planner, social travel feed, messaging, profiles, business listings, moderation tools, and email-based account verification.
+**Live application:** https://travelnestapp.vercel.app/<br>
+**API health check:** https://travelnest-api-oi5o.onrender.com/
 
-## Live demo
+## What TravelNest delivers
 
-- Website: https://travelnestapp.vercel.app/
-- API health check: https://travelnest-api-oi5o.onrender.com/
+- Plan, save, edit, and share multi-stop travel itineraries
+- Generate trip suggestions with the Smart Planner, using starting point, region, interests, and travel pace
+- Explore Kenyan destinations across Coast, Nairobi, Rift Valley, Central, Western, and Southern Safari regions
+- Participate in a travel community through profiles, follows, messages, likes, saves, comments, and notifications
+- Let verified businesses submit travel listings through the SME Portal
+- Support administrator review of business access, listings, and traveller-suggested places
+- Protect accounts with JWT authentication, email verification, and password-reset flows
 
-The React frontend is deployed on Vercel, the Express API is hosted on Render, and production data is stored in MongoDB Atlas.
+## Architecture at a glance
 
-## Screenshots
+TravelNest uses a React single-page application backed by a Node.js and Express REST API. The API owns authentication, itinerary planning, community features, moderation workflows, uploads, and email delivery; MongoDB stores the application data.
 
-Add screenshots to `docs/screenshots/` using these filenames:
+| Layer | Responsibility | Deployment |
+| --- | --- | --- |
+| React frontend | Responsive traveller, business, and admin experience | Vercel |
+| Express API | REST endpoints, application rules, authentication, uploads, and integrations | Render |
+| MongoDB + Mongoose | Persistent data for users, places, itineraries, conversations, and notifications | MongoDB Atlas in production |
+| SMTP provider | Verification and password-reset email delivery | Configured through environment variables |
 
-![TravelNest home page](docs/screenshots/landingpage1.png)
+The architecture diagram is shown in two consecutive parts below; together they form one complete view of the system.
+
+![TravelNest architecture — part 1](docs/screenshots/architecture1.png)
+
+![TravelNest architecture — part 2](docs/screenshots/architecture2.png)
+
+## Domain model
+
+The core data model centres on travellers and the trips they create. Itineraries organise attractions and travel plans; community capabilities are supported by user profiles, conversations, messages, notifications, and place suggestions.
+
+![TravelNest class diagram](docs/screenshots/classdiagram.png)
+
+## Journey documentation
+
+The sequence diagram documents the main application journey and the collaboration between the client, API, authentication layer, and database while a user works with TravelNest.
+
+![TravelNest user journey sequence diagram](docs/screenshots/sequencediagram.png)
+
+## Product preview
+
+| Home | Itinerary builder |
+| --- | --- |
+| ![TravelNest home page](docs/screenshots/landingpage1.png) | ![TravelNest itinerary planner](docs/screenshots/additinerary.png) |
 
 ![TravelNest dashboard](docs/screenshots/builditinerary.png)
 
-![TravelNest itinerary planner](docs/screenshots/additinerary.png)
+## API design
 
-## Features
+The backend exposes RESTful endpoints under `/api` and returns JSON responses. Key resources include:
 
-- Create, edit, save, and share itineraries
-- Smart Planner that builds routes from nearby places and travel pace
-- Kenya region support: Coast, Nairobi, Rift Valley, Central, Western, and Southern Safari
-- Community profiles, follows, messages, likes, saves, comments, and notifications
-- SME Portal for verified businesses to submit travel listings
-- Admin review queues for business applications, listings, and traveller place suggestions
-- Email verification and password reset flows
+| Resource | Base path | Purpose |
+| --- | --- | --- |
+| Authentication | `/api/auth` | Registration, sign-in, verification, and password recovery |
+| Itineraries | `/api/itineraries` | Create, read, update, delete, and share trip plans |
+| Smart Planner | `/api/smart-planner` | Build itinerary suggestions from trip preferences |
+| Attractions | `/api/attractions` | Browse travel places and supporting destination data |
+| Users | `/api/users` | Profiles and community interactions |
+| Chat | `/api/chat` | Conversations and traveller messaging |
+| Notifications | `/api/notifications` | User notification retrieval and management |
+
+Protected routes use JWT bearer tokens. Passwords are hashed with bcrypt before they are stored.
 
 ## Technology
 
-- Frontend: React (Create React App)
-- Backend: Node.js, Express, MongoDB, Mongoose
-- Authentication: JWT and bcrypt
-- File uploads: Multer
-- Email: Nodemailer via SMTP
+- **Frontend:** React, React Router, Axios, and Create React App
+- **Backend:** Node.js, Express, Mongoose, and MongoDB
+- **Authentication:** JSON Web Tokens (JWT) and bcrypt
+- **Uploads:** Multer with publicly served upload paths
+- **Email:** Nodemailer over SMTP
+- **Deployment:** Vercel for the frontend and Render for the API
 
 ## Local setup
 
@@ -77,9 +115,9 @@ On macOS with Homebrew:
 brew services start mongodb-community@8.0
 ```
 
-### 4. Start the app
+### 4. Start the application
 
-Run these in separate terminals:
+Run the API and frontend in separate terminals:
 
 ```bash
 cd backend
@@ -91,24 +129,22 @@ cd frontendd
 npm start
 ```
 
-The frontend runs at `http://localhost:3000` and the API runs at `http://localhost:3001`.
+The frontend runs at `http://localhost:3000`; the API runs at `http://localhost:3001`.
 
-## Seed Kenya travel places
+## Seed Kenyan travel places
 
-To add the starter set of Kenyan attractions to an empty database:
+To add the starter set of attractions to an empty database:
 
 ```bash
 cd backend
 npm run seed
 ```
 
-> Warning: the seed command replaces the existing attraction collection.
+> Warning: this command replaces the existing attraction collection.
 
-## Email setup
+## Email configuration
 
-Email verification and reset delivery are temporarily disabled by default so the app can be demonstrated without SMTP. Set `REQUIRE_EMAIL_VERIFICATION=true` and `DIRECT_PASSWORD_RESET=false` when you are ready to enable the email flow below.
-
-TravelNest sends verification and password-reset emails through SMTP. Add these values to `backend/.env`:
+Email verification and reset delivery are disabled by default for demos. Set `REQUIRE_EMAIL_VERIFICATION=true` and `DIRECT_PASSWORD_RESET=false` when ready to enable the SMTP flow.
 
 ```env
 SMTP_HOST=smtp.gmail.com
@@ -119,17 +155,17 @@ SMTP_PASS=your-gmail-app-password
 MAIL_FROM="TravelNest <your-gmail@gmail.com>"
 ```
 
-For Gmail, use a Google App Password rather than your normal Gmail password. When SMTP is not configured, development links are returned in the UI and written to the backend console.
+For Gmail, use an App Password rather than your normal account password. When SMTP is not configured, development links are returned in the UI and written to the backend console.
 
 ## Roles and moderation
 
-There are three roles:
+| Role | Access |
+| --- | --- |
+| `traveller` | Plans trips, explores places, and participates in the community |
+| `business` | Requests verified access and submits travel listings |
+| `admin` | Reviews business access, listings, and traveller suggestions |
 
-- `traveller`: plans and shares trips
-- `business`: can request verified business access and submit listings
-- `admin`: reviews business access, listings, and traveller suggestions
-
-To make an existing user an admin locally:
+To make an existing local user an administrator, run this in `mongosh`:
 
 ```javascript
 use travelnest
@@ -139,44 +175,19 @@ db.users.updateOne(
 )
 ```
 
-Run this from `mongosh`.
+## Deployment
 
-## Smart Planner behaviour
-
-The planner uses the selected starting landmark as its primary location signal. It:
-
-- keeps places in the selected or inferred Kenya region
-- prefers the chosen interests, but falls back to relevant nearby highlights when necessary
-- limits distance by pace: relaxed 70 km, balanced 100 km, packed 125 km
-- removes duplicate landmarks and orders stops to minimise backtracking
-
-## Production checklist
-
-Before deploying:
-
-- Use MongoDB Atlas instead of a local MongoDB instance
-- Set production `MONGO_URI`, `JWT_SECRET`, `CLIENT_URL`, and SMTP variables
-- Replace local API URLs with an environment-based frontend API URL
-- Configure CORS to allow only your frontend domain
-- Test registration, email verification, password reset, itinerary creation, messages, and the SME review flow
-- Build the frontend with `npm run build`
-
-For a typical deployment, host the React frontend on Vercel or Netlify and the Express API on Render or Railway.
-
-## Deploy on Vercel and Render
-
-1. Create a MongoDB Atlas database and add its connection string as `MONGO_URI` in Render.
-2. Create a Render Web Service using `backend` as the root directory, `npm ci` as the build command, and `npm start` as the start command. Set `CLIENT_URL` to `https://travelnestapp.vercel.app` and fill in the SMTP values before allowing public registrations.
-3. Create a Vercel project with `frontendd` as its root directory. Add `REACT_APP_API_URL=https://travelnest-api-oi5o.onrender.com` and redeploy after setting it.
-4. For preview deployments, separate permitted origins in Render's `CLIENT_URL` value with commas.
-
-The frontend reads `REACT_APP_API_URL` at build time. The default remains `http://localhost:3001` for local development.
+1. Create a MongoDB Atlas database and set its connection string as `MONGO_URI` in Render.
+2. Create a Render Web Service with `backend` as the root directory, `npm ci` as the build command, and `npm start` as the start command. Set `CLIENT_URL` to `https://travelnestapp.vercel.app`.
+3. Create a Vercel project with `frontendd` as its root directory. Set `REACT_APP_API_URL=https://travelnest-api-oi5o.onrender.com` and redeploy.
+4. Before public registration, configure SMTP values and restrict CORS to approved frontend origins. For preview deployments, use comma-separated origins in `CLIENT_URL`.
 
 ## Project structure
 
 ```text
 travelnestapp/
-├── backend/      # Express API, MongoDB models, auth and planner logic
-├── frontendd/    # React user interface
+├── backend/           # Express API, MongoDB models, auth, planner, and integrations
+├── frontendd/         # React user interface
+├── docs/screenshots/  # Architecture, UML, sequence, and product visuals
 └── README.md
 ```
