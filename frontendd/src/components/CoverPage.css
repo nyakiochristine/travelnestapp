@@ -76,3 +76,12 @@
 .trip-preview-image { border-radius: 0; }
 .trip-preview-image span { border-radius: 4px; }
 @media (max-width: 760px) { .cover-main { min-height: 650px; padding: 0 1.25rem 5.5rem; background-position: 58% center; }.cover-copy { text-align: left; }.cover-title { font-size: 2.7rem; }.cover-buttons { align-items: flex-start; }.cover-tagline { justify-content: flex-start; }.trip-search { bottom: -105px; width: calc(100% - 2.5rem); }.how-it-works { margin: 9rem 1.25rem 3rem; padding: 1.35rem; }.how-step + .how-step { border-top: 1px solid rgba(255,255,255,.18); border-left: 0; } }
+
+/* Small route details add movement without obscuring the travel photography. */
+.hero-route-card { position: absolute; z-index: 2; display: flex; align-items: center; gap: .7rem; min-width: 178px; padding: .65rem .8rem; border: 1px solid rgba(255,255,255,.48); border-radius: 10px; background: rgba(255,255,255,.92); box-shadow: 0 14px 32px rgba(5, 25, 50, .24); color: #092b4c; animation: route-float 5.5s ease-in-out infinite; }
+.hero-route-card strong, .hero-route-card small { display: block; }.hero-route-card strong { font-size: .88rem; }.hero-route-card small { margin-top: .1rem; color: #557089; font-size: .74rem; }.route-pin { display: grid; width: 30px; height: 30px; place-items: center; border-radius: 50%; background: #dff8fa; color: #00aeb8; font-size: .9rem; }.hero-route-card--top { top: 18%; right: 11%; }.hero-route-card--bottom { right: 19%; bottom: 17%; animation-delay: -2.4s; }.hero-route-card--bottom .route-pin { color: #ff6b5e; background: #fff0eb; }
+.how-icon { display: grid; width: 42px; height: 42px; place-items: center; margin-bottom: .8rem; border-radius: 12px; background: rgba(255,255,255,.15); font-size: 1.3rem; }
+.trip-preview-card { transition: transform .22s ease, box-shadow .22s ease; }.trip-preview-card:hover { transform: translateY(-6px) rotate(-.35deg); }.trip-preview-image { position: relative; overflow: hidden; }.trip-preview-image::after { content: ''; position: absolute; inset: 0; background: linear-gradient(135deg, rgba(0,174,184,.1), transparent 55%, rgba(255,107,94,.14)); pointer-events: none; }
+@keyframes route-float { 0%, 100% { transform: translateY(0) rotate(0); } 50% { transform: translateY(-10px) rotate(.6deg); } }
+@media (max-width: 820px) { .hero-route-card { display: none; } }
+@media (prefers-reduced-motion: reduce) { .hero-route-card, .trip-preview-card { animation: none; transition: none; } }

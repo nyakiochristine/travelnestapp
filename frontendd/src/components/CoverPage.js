@@ -36,6 +36,8 @@ const CoverPage = () => {
           </div>
           <div className="cover-tagline"><span>Save the good ideas</span><span>Build a route that fits</span><span>Share what worked</span></div>
         </div>
+        <div className="hero-route-card hero-route-card--top" aria-hidden="true"><span className="route-pin">✦</span><div><strong>Coast</strong><small>3 stops saved</small></div></div>
+        <div className="hero-route-card hero-route-card--bottom" aria-hidden="true"><span className="route-pin">●</span><div><strong>Nairobi</strong><small>Food · art · stays</small></div></div>
         <div className="trip-search" aria-label="Discover itineraries">
           <div><span>Start with</span><strong>One place you want to see</strong></div>
           <div><span>Then add</span><strong>Food, coast, culture or wildlife</strong></div>
@@ -45,9 +47,9 @@ const CoverPage = () => {
       <section className="how-it-works" aria-label="How TravelNest works">
         <div className="how-intro"><span className="section-kicker">Travel planning</span><h2>Plan, save, share.</h2><p>Keep your notes, routes, and recommendations together.</p></div>
         <div className="how-steps">
-          <article className="how-step"><span className="step-number">01</span><h3>Build a route</h3><p>Add stops, dates, activities and a budget in one considered itinerary.</p></article>
-          <article className="how-step"><span className="step-number">02</span><h3>Find useful ideas</h3><p>Explore routes and recommendations shared by people who have made the trip.</p></article>
-          <article className="how-step"><span className="step-number">03</span><h3>Bring people along</h3><p>Save a route, message its creator or share it with your travel crew.</p></article>
+          <article className="how-step"><span className="step-number">01</span><span className="how-icon" aria-hidden="true">🧭</span><h3>Build a route</h3><p>Add stops, dates, activities and a budget in one itinerary.</p></article>
+          <article className="how-step"><span className="step-number">02</span><span className="how-icon" aria-hidden="true">📍</span><h3>Find useful ideas</h3><p>Explore routes and recommendations shared by other travellers.</p></article>
+          <article className="how-step"><span className="step-number">03</span><span className="how-icon" aria-hidden="true">💬</span><h3>Bring people along</h3><p>Save a route, message its creator, or share it with your group.</p></article>
         </div>
       </section>
       <section className="featured-trips">
