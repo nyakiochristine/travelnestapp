@@ -17,14 +17,23 @@ const storage = multer.diskStorage({
   destination: (_req, _file, cb) => cb(null, uploadsDir),
   filename: (_req, file, cb) => cb(null, `${Date.now()}-${file.originalname.replace(/\s+/g, '_')}`)
 });
-const upload = multer({ storage });
+const upload = multer({
+  storage,
+  limits: { fileSize: 25 * 1024 * 1024 },
+  fileFilter: (_req, file, cb) => {
+    if (/^(image|video)\//.test(file.mimetype)) return cb(null, true);
+    return cb(new multer.MulterError('LIMIT_UNEXPECTED_FILE', file.fieldname));
+  }
+});
 
-function buildMessagePayload({ text, itineraryId, imageUrl }) {
+function buildMessagePayload({ text, itineraryId, imageUrl, mediaUrl, mediaType }) {
   const normalizedText = typeof text === 'string' ? text.trim() : '';
   const normalizedImage = typeof imageUrl === 'string' ? imageUrl.trim() : '';
+  const normalizedMediaUrl = typeof mediaUrl === 'string' ? mediaUrl.trim() : '';
+  const normalizedMediaType = ['image', 'video', 'gif'].includes(mediaType) ? mediaType : '';
   const normalizedItineraryId = itineraryId || null;
 
-  if (!normalizedText && !normalizedImage && !normalizedItineraryId) {
+  if (!normalizedText && !normalizedImage && !normalizedMediaUrl && !normalizedItineraryId) {
     return {
       valid: false,
       error: 'Write a message or attach a picture before sending.'
@@ -35,6 +44,8 @@ function buildMessagePayload({ text, itineraryId, imageUrl }) {
     valid: true,
     text: normalizedText,
     image: normalizedImage || '',
+    mediaUrl: normalizedMediaUrl || '',
+    mediaType: normalizedMediaType,
     itineraryId: normalizedItineraryId
   };
 }
@@ -137,10 +148,13 @@ router.get('/my', verifyToken, async (req, res) => {
 });
 
 /* 2.4 Send a message (text and/or itinerary) */
-router.post('/:conversationId/messages', verifyToken, upload.single('image'), async (req, res) => {
+router.post('/:conversationId/messages', verifyToken, upload.fields([{ name: 'media', maxCount: 1 }, { name: 'image', maxCount: 1 }]), async (req, res) => {
   try {
     const { text, itineraryId } = req.body;
-    const imageUrl = req.file ? `/uploads/messages/${req.file.filename}` : req.body.image;
+    const uploadedFile = req.files?.media?.[0] || req.files?.image?.[0];
+    const mediaUrl = uploadedFile ? `/uploads/messages/${uploadedFile.filename}` : req.body.mediaUrl;
+    const mediaType = uploadedFile ? (uploadedFile.mimetype.startsWith('video/') ? 'video' : 'image') : req.body.mediaType;
+    const imageUrl = req.body.image;
     const convoId = req.params.conversationId;
 
     if (!mongoose.Types.ObjectId.isValid(convoId)) {
@@ -160,7 +174,9 @@ router.post('/:conversationId/messages', verifyToken, upload.single('image'), as
     const payload = buildMessagePayload({
       text,
       itineraryId,
-      imageUrl
+      imageUrl,
+      mediaUrl,
+      mediaType
     });
 
     if (!payload.valid) {
@@ -172,6 +188,8 @@ router.post('/:conversationId/messages', verifyToken, upload.single('image'), as
       sender: req.userId,
       text: payload.text,
       image: payload.image,
+      mediaUrl: payload.mediaUrl,
+      mediaType: payload.mediaType,
       itinerary: payload.itineraryId || null
     });
 

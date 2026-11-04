@@ -20,3 +20,11 @@ test('buildMessagePayload rejects empty messages without text, image, or itinera
   assert.equal(payload.valid, false);
   assert.match(payload.error, /Write a message or attach/i);
 });
+
+test('buildMessagePayload preserves video attachments', () => {
+  const payload = buildMessagePayload({ mediaUrl: '/uploads/messages/trip.mp4', mediaType: 'video' });
+
+  assert.equal(payload.valid, true);
+  assert.equal(payload.mediaUrl, '/uploads/messages/trip.mp4');
+  assert.equal(payload.mediaType, 'video');
+});

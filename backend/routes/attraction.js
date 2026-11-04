@@ -16,7 +16,14 @@ router.post('/business-application', verifyToken, async (req, res) => {
   const user = await User.findById(req.userId);
   if (!user) return res.status(404).json({ error: 'Account not found.' });
   if (user.role === 'admin' || user.businessVerificationStatus === 'approved') return res.json({ message: 'Your business access is already approved.', status: 'approved' });
-  user.role = 'business'; user.businessVerificationStatus = 'pending'; await user.save();
+  const businessName = req.body.businessName?.trim();
+  const businessDescription = req.body.businessDescription?.trim();
+  const businessWebsite = req.body.businessWebsite?.trim() || '';
+  if (!businessName || !businessDescription) return res.status(400).json({ error: 'Business name and a short description are required.' });
+  if (businessWebsite && !/^https?:\/\//i.test(businessWebsite)) return res.status(400).json({ error: 'Website must start with http:// or https://.' });
+  user.role = 'business'; user.businessVerificationStatus = 'pending';
+  user.businessName = businessName; user.businessDescription = businessDescription; user.businessWebsite = businessWebsite;
+  await user.save();
   res.status(202).json({ message: 'Business access requested. An admin must approve it before you can publish listings.', status: 'pending' });
 });
 
@@ -26,7 +33,7 @@ router.get('/my', verifyToken, async (req, res) => {
   const response = { role: user.role, verificationStatus: user.businessVerificationStatus, listings: await Attraction.find({ owner: req.userId }).sort({ updatedAt: -1 }) };
   if (isAdmin(user)) {
     response.pendingListings = await Attraction.find({ status: 'pending' }).populate('owner', 'name email').sort({ createdAt: 1 });
-    response.businessApplications = await User.find({ role: 'business', businessVerificationStatus: 'pending' }).select('name email businessVerificationStatus createdAt');
+    response.businessApplications = await User.find({ role: 'business', businessVerificationStatus: 'pending' }).select('name email businessName businessDescription businessWebsite businessVerificationStatus createdAt');
     response.placeSuggestions = await PlaceSuggestion.find({ status: 'pending' }).populate('submittedBy', 'name').sort({ updatedAt: -1 });
   }
   res.json(response);
@@ -66,7 +73,7 @@ router.get('/pending', verifyToken, async (req, res) => {
 
 router.get('/business-applications', verifyToken, async (req, res) => {
   if (!isAdmin(await currentUser(req))) return res.status(403).json({ error: 'Admin access required.' });
-  res.json(await User.find({ role: 'business', businessVerificationStatus: 'pending' }).select('name email businessVerificationStatus createdAt'));
+  res.json(await User.find({ role: 'business', businessVerificationStatus: 'pending' }).select('name email businessName businessDescription businessWebsite businessVerificationStatus createdAt'));
 });
 
 router.patch('/business-applications/:userId', verifyToken, async (req, res) => {
