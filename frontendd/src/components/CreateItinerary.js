@@ -12,6 +12,8 @@ function CreateItinerary({ onCreate }) {
   const [tripStart, setTripStart] = useState('');
   const [tripEnd, setTripEnd] = useState('');
   const [tripCoverImage, setTripCoverImage] = useState(null);
+  const [feedback, setFeedback] = useState('');
+  const [submitting, setSubmitting] = useState(false);
 
   const [places, setPlaces] = useState([
     {
@@ -118,7 +120,7 @@ function CreateItinerary({ onCreate }) {
   const handleSubmit = async e => {
     e.preventDefault();
     if (!token) {
-      alert('You must be logged in to create an itinerary');
+      setFeedback('You must be logged in to create an itinerary.');
       return;
     }
 
@@ -159,17 +161,14 @@ function CreateItinerary({ onCreate }) {
       });
     });
 
-    const response = await fetch(window.__TRAVELNEST_API_URL__ + '/api/itineraries', {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-      body: formData,
-    });
-
-    if (response.ok) {
-      await response.json();
-      alert('Itinerary created successfully');
+    try {
+      setSubmitting(true); setFeedback('');
+      const response = await fetch(window.__TRAVELNEST_API_URL__ + '/api/itineraries', {
+        method: 'POST', headers: { Authorization: `Bearer ${token}` }, body: formData,
+      });
+      const result = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(result.error || 'Failed to create itinerary.');
+      setFeedback('Itinerary created successfully.');
       setTitle('');
       setTripStart('');
       setTripEnd('');
@@ -185,9 +184,8 @@ function CreateItinerary({ onCreate }) {
         },
       ]);
       if (onCreate) onCreate();
-    } else {
-      alert('Failed to create itinerary');
-    }
+    } catch (error) { setFeedback(error.message || 'Failed to create itinerary.'); }
+    finally { setSubmitting(false); }
   };
 
   return (
@@ -198,6 +196,7 @@ function CreateItinerary({ onCreate }) {
         className="create-itinerary-form"
         encType="multipart/form-data"
       >
+        {feedback && <p className="form-feedback" role="status">{feedback}</p>}
         {/* Itinerary-level fields */}
         <label className="field-label">Trip name<input
           className="input-field"
@@ -348,8 +347,8 @@ function CreateItinerary({ onCreate }) {
         <button type="button" onClick={addPlace} className="add-place-btn">
           + Add another stop
         </button>
-        <button type="submit" className="create-btn">
-          Publish your itinerary
+        <button type="submit" className="create-btn" disabled={submitting}>
+          {submitting ? 'Creating itinerary…' : 'Publish your itinerary'}
         </button>
       </form>
     </div>

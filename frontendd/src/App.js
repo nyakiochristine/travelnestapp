@@ -20,6 +20,9 @@ import ForgotPassword from './components/ForgotPassword';
 import ResetPassword from './components/ResetPassword';
 import VerifyEmail from './components/VerifyEmail';
 
+function NotFound() {
+  return <main className="error" role="main"><h1>Page not found</h1><p>The page you requested does not exist or may have moved.</p></main>;
+}
 
 
 function App() {
@@ -45,7 +48,7 @@ function App() {
         <Route path="/profile/:userId" element={<Profile />} />
         <Route path="/messages" element={<PrivateRoute><Chats/></PrivateRoute>} />
         <Route path="/profiles" element={<PrivateRoute><Profiles /></PrivateRoute>} />  
-        
+        <Route path="*" element={<NotFound />} />
       </Routes>
     
     </AuthProvider>

@@ -16,11 +16,13 @@ function Dashboard({ initialTab = 'planner' }) {
   const [activeTab, setActiveTab] = useState(initialTab); 
   const [editingItinerary, setEditingItinerary] = useState(null);
   const [message, setMessage] = useState('');
+  const [loading, setLoading] = useState(true);
 
 
   const fetchItineraries = useCallback(async () => {
     if (!token) return;
     try {
+      setLoading(true);
       // Changed URL to match the 'my-itineraries' route
       const response = await fetch(window.__TRAVELNEST_API_URL__ + '/api/itineraries/my-itineraries', {
         headers: { 
@@ -31,8 +33,11 @@ function Dashboard({ initialTab = 'planner' }) {
       if (response.ok) {
         const data = await response.json();
         setItineraries(Array.isArray(data) ? data : []);
+      } else {
+        setMessage('We could not load your itineraries. Please refresh and try again.');
       }
-    } catch (err) { console.error('Dashboard fetch failed:', err); }
+    } catch (_err) { setMessage('We could not load your itineraries. Please check your connection.'); }
+    finally { setLoading(false); }
   }, [token]);
 
 
@@ -82,9 +87,9 @@ function Dashboard({ initialTab = 'planner' }) {
       {/* --- HISTORY SECTION --- */}
       <section className="itinerary-list-section">
         <div className="itinerary-section-heading"><div><p className="section-label">Your library</p><h2>Your itineraries</h2></div><span>{itineraries.length} saved</span></div>
-        {message && <div className="dashboard-message">{message}<button onClick={() => setMessage('')}>×</button></div>}
+        {message && <div className="dashboard-message" role="status">{message}<button aria-label="Dismiss message" onClick={() => setMessage('')}>×</button></div>}
         <div className="itinerary-grid">
-          {itineraries.length === 0 ? (
+          {loading ? <p className="loading" role="status">Loading your itineraries…</p> : itineraries.length === 0 ? (
             <div className="workspace-empty"><p className="section-label">Nothing here yet</p><h3>Start with a place you want to see.</h3><p>Use the planner for a quick route, or build an itinerary stop by stop.</p><button className="btn-primary" onClick={() => setActiveTab('planner')}>Open smart planner</button></div>
           ) : (
             itineraries.map((it) => (

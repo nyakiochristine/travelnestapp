@@ -5,12 +5,16 @@ import { useNavigate } from 'react-router-dom';
 const CoverPage = () => {
   const navigate = useNavigate();
   const [featuredTrips, setFeaturedTrips] = useState([]);
+  const [featuredError, setFeaturedError] = useState(false);
 
   useEffect(() => {
     fetch(window.__TRAVELNEST_API_URL__ + '/api/itineraries/public')
-      .then(response => response.ok ? response.json() : [])
+      .then(response => {
+        if (!response.ok) setFeaturedError(true);
+        return response.ok ? response.json() : [];
+      })
       .then(data => setFeaturedTrips(Array.isArray(data) ? data.slice(0, 3) : []))
-      .catch(() => setFeaturedTrips([]));
+      .catch(() => { setFeaturedTrips([]); setFeaturedError(true); });
   }, []);
 
   return (
@@ -51,6 +55,7 @@ const CoverPage = () => {
           <div><span className="section-kicker">From the community</span><h2>Itineraries worth stealing</h2><p>See how African travellers are making every stop count.</p></div>
           <button className="featured-link" onClick={() => navigate('/register')}>Explore the feed →</button>
         </div>
+        {featuredError && <p className="inline-notice" role="status">Community routes are temporarily unavailable. You can still start planning your own trip.</p>}
         <div className="trip-preview-grid">
           {featuredTrips.length > 0 ? featuredTrips.map((trip, index) => (
             <article className="trip-preview-card" key={trip._id}>

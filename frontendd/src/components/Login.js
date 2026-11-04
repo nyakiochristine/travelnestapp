@@ -21,7 +21,7 @@ function Login() {
         body: JSON.stringify({ email, password }),
       });
 
-      const data = await response.json();
+      const data = await response.json().catch(() => ({}));
 
       if (response.ok) {
         login({ token: data.token, user: data.user });
@@ -67,7 +67,7 @@ function Login() {
         <button type="submit" className="btn-login" disabled={submitting}>{submitting ? 'Signing you in…' : 'Login'}</button>
       </form>
 
-      {feedback && <p className="auth-feedback" role="status">{feedback}</p>}
+      {feedback && <p className="auth-feedback" role={feedback.startsWith('Welcome') ? 'status' : 'alert'}>{feedback}</p>}
 
       <div style={{ marginTop: '12px' }}>
         <Link to="/forgot-password">Forgot Password?</Link>
