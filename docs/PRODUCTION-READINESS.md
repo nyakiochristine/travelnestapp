@@ -29,7 +29,11 @@ This document separates local/demo conveniences from production requirements. Do
 - JWT-protected routes and password hashing
 - Request-body limit, CORS allowlist, safe JSON error responses, and HTTP security headers
 - `/health` endpoint for deployment health checks
-- CI runs backend tests/checks plus frontend tests/build on pull requests and pushes to `main`
+- CI runs backend tests/checks plus frontend tests/build on pull requests and pushes to `ft-dev` or `master`
+
+## Current hosted configuration
+
+The checked-in Render blueprint has email verification disabled so registration and login continue to work until an SMTP provider is configured. Before opening registration to the public, add working SMTP credentials in Render and set `REQUIRE_EMAIL_VERIFICATION=true`.
 
 ## Pre-release checklist
 
