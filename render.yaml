@@ -5,7 +5,7 @@ services:
     rootDir: backend
     buildCommand: npm ci
     startCommand: npm start
-    healthCheckPath: /
+    healthCheckPath: /health
     envVars:
       - key: NODE_ENV
         value: production
@@ -18,9 +18,9 @@ services:
       - key: CLIENT_URL
         sync: false
       - key: REQUIRE_EMAIL_VERIFICATION
-        value: "false"
-      - key: DIRECT_PASSWORD_RESET
         value: "true"
+      - key: DIRECT_PASSWORD_RESET
+        value: "false"
       - key: SMTP_HOST
         sync: false
       - key: SMTP_PORT
