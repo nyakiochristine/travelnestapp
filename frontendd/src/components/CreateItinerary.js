@@ -190,7 +190,7 @@ function CreateItinerary({ onCreate }) {
 
   return (
     <div className="create-itinerary-container">
-      <header className="create-itinerary-header"><span>YOUR TRIP, YOUR STORY</span><h2 className="create-itinerary-title">Create a new itinerary</h2><p>Start with the essentials, then add every memorable stop along the way.</p></header>
+      <header className="create-itinerary-header"><span>ITINERARY</span><h2 className="create-itinerary-title">Create an itinerary</h2><p>Add your dates, stops, activities, and notes.</p></header>
       <form
         onSubmit={handleSubmit}
         className="create-itinerary-form"
