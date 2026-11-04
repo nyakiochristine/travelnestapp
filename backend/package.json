@@ -5,7 +5,9 @@
   "scripts": {
     "start": "node app.js",
     "dev": "node --watch app.js",
-    "seed": "node seed.js"
+    "seed": "node seed.js",
+    "test": "node --test",
+    "check": "node --check app.js && node --check routes/auth.js && node --check routes/itinerary.js"
   },
   "keywords": [],
   "author": "",
