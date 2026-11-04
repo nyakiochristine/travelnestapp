@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import './Register.css';
 
 function Register() {
@@ -7,18 +8,26 @@ function Register() {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
+  const [submitting, setSubmitting] = useState(false);
 
   const handleSubmit = async e => {
     e.preventDefault();
     setError('');
     if (password !== confirmPassword) return setError('Passwords do not match.');
-    const response = await fetch(window.__TRAVELNEST_API_URL__ + '/api/auth/register', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name, email, password }), // send name, email, password
-    });
-    const data = await response.json();
-    if (response.ok) setError(data.message); else setError(data.error || 'Registration failed.');
+    try {
+      setSubmitting(true);
+      const response = await fetch(window.__TRAVELNEST_API_URL__ + '/api/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email, password }),
+      });
+      const data = await response.json().catch(() => ({}));
+      setError(response.ok ? data.message : (data.error || 'Registration failed.'));
+    } catch (_error) {
+      setError('We could not reach TravelNest. Please try again.');
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -50,9 +59,10 @@ function Register() {
         />
         <input className="input-field" placeholder="Confirm password" type="password" value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)} required />
         <p className="password-hint">Use at least 8 characters, including a letter and a number.</p>
-        <button type="submit" className="btn-register">Register</button>
+        <button type="submit" className="btn-register" disabled={submitting}>{submitting ? 'Creating account…' : 'Register'}</button>
       </form>
-      {error && <p className="auth-message">{error}</p>}
+      {error && <p className="auth-message" role="status">{error}</p>}
+      <Link className="auth-link" to="/login">Already have an account? Log in</Link>
     </div>
   );
 }
