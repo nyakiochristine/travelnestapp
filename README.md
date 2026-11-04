@@ -2,8 +2,7 @@
 
 TravelNest is a full-stack travel-planning and community platform built around Kenyan travel. Travellers can discover places, build and share itineraries, connect with other travellers, and manage their travel profile. Businesses can submit listings for review, while administrators moderate community and marketplace content.
 
-**Live application:** https://travelnestapp.vercel.app/<br>
-**API health check:** https://travelnest-api-oi5o.onrender.com/
+> This repository documents the platform architecture and local development workflow. Deployment URLs and environment-specific identifiers are intentionally excluded.
 
 ## What TravelNest delivers
 
@@ -178,9 +177,11 @@ db.users.updateOne(
 ## Deployment
 
 1. Create a MongoDB Atlas database and set its connection string as `MONGO_URI` in Render.
-2. Create a Render Web Service with `backend` as the root directory, `npm ci` as the build command, and `npm start` as the start command. Set `CLIENT_URL` to `https://travelnestapp.vercel.app`.
-3. Create a Vercel project with `frontendd` as its root directory. Set `REACT_APP_API_URL=https://travelnest-api-oi5o.onrender.com` and redeploy.
+2. Create a Render Web Service with `backend` as the root directory, `npm ci` as the build command, and `npm start` as the start command. Set `CLIENT_URL` to your production frontend domain.
+3. Create a Vercel project with `frontendd` as its root directory. Set `REACT_APP_API_URL` to your production API URL and redeploy.
 4. Before public registration, configure SMTP values and restrict CORS to approved frontend origins. For preview deployments, use comma-separated origins in `CLIENT_URL`.
+
+For a clear distinction between development conveniences and production requirements, read [Production readiness](docs/PRODUCTION-READINESS.md).
 
 ## Project structure
 
