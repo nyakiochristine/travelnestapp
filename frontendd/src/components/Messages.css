@@ -234,6 +234,7 @@
   border-radius: 10px;
   object-fit: cover;
 }
+.msg-video { display: block; width: min(100%, 340px); max-height: 260px; margin-top: .6rem; border-radius: 10px; background: #173a37; }
 .msg-itinerary {
   display: inline-flex;
   align-items: center;
@@ -302,6 +303,10 @@
   font-weight: 800;
   cursor: pointer;
 }
+.emoji-btn, .gif-btn { display: grid; width: 38px; height: 38px; place-items: center; padding: 0; border: 1px solid #b9d9d1; border-radius: 10px; background: #f0faf7; color: #005d5a; font-weight: 800; cursor: pointer; }
+.gif-btn { width: auto; padding: 0 .55rem; font-size: .75rem; }
+.gif-input { display: flex; align-items: center; gap: .7rem; color: #5c7773; font-size: .82rem; font-weight: 700; }
+.gif-input input { flex: 1; padding: .6rem .75rem; border: 1px solid #b9d9d1; border-radius: 8px; }
 .attach-image-btn {
   position: relative;
   overflow: hidden;

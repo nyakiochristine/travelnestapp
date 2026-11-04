@@ -1,11 +1,11 @@
 :root {
-  --burgundy: #075985;
-  --burgundy-dark: #0c3654;
-  --burgundy-soft: #e0f2fe;
-  --border-soft: #dbe7ed;
-  --text-main: #102a43;
-  --text-muted: #627d98;
-  --gold: #f6bd60;
+  --burgundy: #00aeb8;
+  --burgundy-dark: #07345c;
+  --burgundy-soft: #dff8fa;
+  --border-soft: #cfe3ed;
+  --text-main: #092b4c;
+  --text-muted: #557089;
+  --gold: #ff6b5e;
 }
 
 .dashboard-container {
@@ -203,3 +203,7 @@
 .workspace-empty .btn-primary { padding: .7rem .9rem; border-radius: 5px; }
 @media (max-width: 800px) { .itinerary-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 540px) { .itinerary-grid { grid-template-columns: 1fr; }.itinerary-section-heading { align-items: start; }.workspace-empty { padding: 1.45rem; } }
+.business-application { display: grid; gap: 1rem; max-width: 620px; margin-top: 1rem; }
+.business-application label { display: grid; gap: .42rem; color: var(--ink); font-size: .9rem; font-weight: 700; }
+.business-application input, .business-application textarea { width: 100%; padding: .75rem .85rem; border: 1px solid var(--line); border-radius: 7px; background: #fff; color: var(--ink); }
+.business-application textarea { min-height: 100px; resize: vertical; }

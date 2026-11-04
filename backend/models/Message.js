@@ -22,6 +22,8 @@ const MessageSchema = new mongoose.Schema(
       type: String,
       default: ''
     },
+    mediaUrl: { type: String, default: '' },
+    mediaType: { type: String, enum: ['image', 'video', 'gif', ''], default: '' },
 
     // Optional: share an itinerary inside a message
     itinerary: {

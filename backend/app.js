@@ -65,6 +65,8 @@ function createApp() {
 
   app.use((_req, res) => res.status(404).json({ error: 'Route not found.' }));
   app.use((error, _req, res, _next) => {
+    if (error.code === 'LIMIT_FILE_SIZE') return res.status(413).json({ error: 'Attachments must be 25 MB or smaller.' });
+    if (error.code === 'LIMIT_UNEXPECTED_FILE') return res.status(400).json({ error: 'Only image and video attachments are supported.' });
     if (error.type === 'entity.parse.failed') return res.status(400).json({ error: 'Request body must be valid JSON.' });
     if (error.message === 'Origin is not allowed by CORS') return res.status(403).json({ error: error.message });
     console.error('Unhandled request error:', error.message);

@@ -12,7 +12,10 @@ function Messages() {
   const [activeConvo, setActiveConvo] = useState(null);
   const [messages, setMessages] = useState([]);
   const [text, setText] = useState('');
-  const [selectedImage, setSelectedImage] = useState(null);
+  const [selectedMedia, setSelectedMedia] = useState(null);
+  const [gifUrl, setGifUrl] = useState('');
+  const [showGifInput, setShowGifInput] = useState(false);
+  const [sending, setSending] = useState(false);
   const [travelers, setTravelers] = useState([]);
   const [showNewMessage, setShowNewMessage] = useState(false);
   const [travelerQuery, setTravelerQuery] = useState('');
@@ -77,31 +80,22 @@ function Messages() {
 
   const handleSend = async (e) => {
     e.preventDefault();
-    if (!activeConvo || (!text.trim() && !selectedImage)) return;
+    if (!activeConvo || (!text.trim() && !selectedMedia && !gifUrl.trim())) return;
 
-    setError('');
+    setError(''); setSending(true);
 
     const formData = new FormData();
     if (text.trim()) formData.append('text', text.trim());
-    if (selectedImage) formData.append('image', selectedImage);
+    if (selectedMedia) formData.append('media', selectedMedia);
+    if (gifUrl.trim()) { formData.append('mediaUrl', gifUrl.trim()); formData.append('mediaType', 'gif'); }
 
-    const res = await fetch(
-      `${window.__TRAVELNEST_API_URL__}/api/chat/${activeConvo._id}/messages`,
-      {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${token}`
-        },
-        body: formData
-      }
-    );
-    if (res.ok) {
-      const msg = await res.json();
-      setMessages(prev => [...prev, msg]);
-      setText('');
-      setSelectedImage(null);
-      setConversations(previous => previous.map(conversation => conversation._id === activeConvo._id ? { ...conversation, latestMessage: msg, updatedAt: new Date().toISOString() } : conversation).sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt)));
-    } else setError('Your message could not be sent. Please try again.');
+    try {
+      const res = await fetch(`${window.__TRAVELNEST_API_URL__}/api/chat/${activeConvo._id}/messages`, { method: 'POST', headers: { Authorization: `Bearer ${token}` }, body: formData });
+      const body = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(body.error || 'Your message could not be sent. Please try again.');
+      setMessages(prev => [...prev, body]); setText(''); setSelectedMedia(null); setGifUrl(''); setShowGifInput(false);
+      setConversations(previous => previous.map(conversation => conversation._id === activeConvo._id ? { ...conversation, latestMessage: body, updatedAt: new Date().toISOString() } : conversation).sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt)));
+    } catch (sendError) { setError(sendError.message); } finally { setSending(false); }
   };
 
   if (!token) {
@@ -180,17 +174,15 @@ function Messages() {
                       <div className="msg-text">{m.text}</div>
                     )}
 
-                    {m.image && (
+                    {(m.mediaUrl || m.image) && (m.mediaType === 'video' ? (
+                      <video className="msg-video" controls preload="metadata" src={m.mediaUrl.startsWith('http') ? m.mediaUrl : `${window.__TRAVELNEST_API_URL__}${m.mediaUrl}`} />
+                    ) : (
                       <img
-                        src={
-                          m.image.startsWith('http')
-                            ? m.image
-                            : `${window.__TRAVELNEST_API_URL__}${m.image}`
-                        }
-                        alt="Attachment"
+                        src={(m.mediaUrl || m.image).startsWith('http') ? (m.mediaUrl || m.image) : `${window.__TRAVELNEST_API_URL__}${m.mediaUrl || m.image}`}
+                        alt={m.mediaType === 'gif' ? 'Animated GIF' : 'Attachment'}
                         className="msg-image"
                       />
-                    )}
+                    ))}
 
                     {m.itinerary && (
                       <Link
@@ -225,23 +217,25 @@ function Messages() {
             </div>
 
             <form className="chat-input-row" onSubmit={handleSend}>
-              {selectedImage && (
+              {selectedMedia && (
                 <div className="chat-image-preview">
-                  <img
-                    src={URL.createObjectURL(selectedImage)}
-                    alt="Selected preview"
-                  />
-                  <button type="button" onClick={() => setSelectedImage(null)}>Remove</button>
+                  {selectedMedia.type.startsWith('video/') ? <span>🎬 {selectedMedia.name}</span> : <img src={URL.createObjectURL(selectedMedia)} alt="Selected preview" />}
+                  <button type="button" onClick={() => setSelectedMedia(null)}>Remove</button>
                 </div>
               )}
 
+              {showGifInput && <label className="gif-input"><span>GIF link</span><input type="url" value={gifUrl} onChange={event => setGifUrl(event.target.value)} placeholder="Paste a GIF URL" /></label>}
+
               <div className="chat-input-actions">
+                <button type="button" className="emoji-btn" aria-label="Add a smile emoji" onClick={() => setText(value => `${value} 😊`)}>😊</button>
+                <button type="button" className="emoji-btn" aria-label="Add a travel emoji" onClick={() => setText(value => `${value} ✈️`)}>✈️</button>
+                <button type="button" className="gif-btn" onClick={() => setShowGifInput(value => !value)}>GIF</button>
                 <label className="attach-image-btn">
-                  Photo
+                  Media
                   <input
                     type="file"
-                    accept="image/*"
-                    onChange={e => setSelectedImage(e.target.files?.[0] || null)}
+                    accept="image/*,video/*"
+                    onChange={e => setSelectedMedia(e.target.files?.[0] || null)}
                   />
                 </label>
 
@@ -251,7 +245,7 @@ function Messages() {
                   value={text}
                   onChange={e => setText(e.target.value)}
                 />
-                <button type="submit">Send</button>
+                <button type="submit" disabled={sending}>{sending ? 'Sending…' : 'Send'}</button>
               </div>
             </form>
           </>
