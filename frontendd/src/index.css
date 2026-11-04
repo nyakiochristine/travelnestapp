@@ -1,18 +1,18 @@
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap');
 
 :root {
-  --ink: #153b3a;
-  --ocean: #007c78;
-  --ocean-deep: #005d5a;
-  --sky: #d9f4ef;
-  --sand: #fff9ed;
-  --coral: #3f6664;
-  --coral-dark: #244b49;
-  --sun: #ff9a7a;
+  --ink: #092b4c;
+  --ocean: #00aeb8;
+  --ocean-deep: #07345c;
+  --sky: #dff8fa;
+  --sand: #f7fbff;
+  --coral: #ff6b5e;
+  --coral-dark: #d94e45;
+  --sun: #ff8a72;
   --surface: #ffffff;
-  --line: #d7e8e2;
-  --muted: #5c7773;
-  --shadow: 0 14px 40px rgba(15, 118, 110, .12);
+  --line: #cfe3ed;
+  --muted: #557089;
+  --shadow: 0 14px 40px rgba(9, 43, 76, .12);
 }
 
 * { box-sizing: border-box; }
@@ -54,7 +54,7 @@ button:disabled { cursor: not-allowed; opacity: .65; }
 @media (max-width: 720px) { .dashboard-container, .itineraries-feed, .profile-container, .messages-layout, .public-itineraries-container, .itinerary-details { margin-top: 1.25rem !important; } }
 
 /* Refined shared application language. These overrides unify older component styles. */
-:root { --ink: #173a37; --ocean: #136f69; --ocean-deep: #0e504c; --surface: #fff; --line: #dce7e4; --muted: #627572; --shadow: 0 10px 28px rgba(18, 63, 60, .08); }
+:root { --ink: #092b4c; --ocean: #00aeb8; --ocean-deep: #07345c; --surface: #fff; --line: #cfe3ed; --muted: #557089; --shadow: 0 10px 28px rgba(9, 43, 76, .08); }
 body { background: #f7f9f8; letter-spacing: 0; }
 button, input, textarea, select { border-radius: 6px !important; }
 button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible { outline: 3px solid rgba(19,111,105,.28); outline-offset: 2px; }
@@ -95,3 +95,14 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
 .feed-intro p, .trip-content p { font-size: 1.02rem; }
 .trip-author small, .trip-date, .social-counts { font-size: .9rem; }
 @media (max-width: 720px) { .navbar { padding: .65rem 1rem; align-items: flex-start; }.nav-links { gap: .65rem; flex-wrap: wrap; justify-content: flex-end; }.nav-links a, .nav-utility-link { font-size: .82rem; }.dashboard-header { padding-top: 1.8rem; }.tab-navigation { overflow-x: auto; justify-content: flex-start; }.tab-navigation button { flex: 0 0 auto; padding: .7rem .75rem; }.social-trip-card .feed-cover { height: 230px; } }
+
+/* Coastal palette: deep navy foundations, turquoise actions, coral highlights. */
+.navbar, .how-it-works, .msg-row.own .msg-bubble { background: #092b4c !important; }
+.btn-primary, .btn-secondary, .btn-ml, .btn-login, .btn-register, .follow-btn, .save-profile-btn, .chat-input-row button[type='submit'], .new-message-btn, .create-btn, .planner-submit { background: #00aeb8 !important; }
+.btn-primary:hover, .btn-secondary:hover, .btn-ml:hover, .btn-login:hover, .btn-register:hover, .follow-btn:hover, .save-profile-btn:hover, .chat-input-row button[type='submit']:hover, .new-message-btn:hover, .create-btn:hover, .planner-submit:hover { background: #007f8a !important; }
+.explore-btn, .notif-badge, .place-heading span, .create-itinerary-header > span { background-color: #ff6b5e !important; color: #fff !important; }
+.place-heading span, .create-itinerary-header > span { background: transparent !important; }
+.dashboard-title, .feed-title, .section-title, .itinerary-title, .chat-header h3, .convo-list h2, .create-itinerary-title, .profile-info h1 { color: #092b4c !important; }
+.add-place-btn, .emoji-btn, .gif-btn, .profile-stats span, .interest-chips button { background: #dff8fa !important; color: #07345c !important; border-color: #9bdde3 !important; }
+.tab-navigation button.active { color: #00aeb8 !important; box-shadow: inset 0 -2px 0 #00aeb8 !important; }
+.chat-messages, .chat-empty { background: linear-gradient(180deg, #f5fcff, #fff) !important; }
