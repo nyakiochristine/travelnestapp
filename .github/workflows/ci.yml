@@ -3,7 +3,7 @@ name: Continuous integration
 on:
   pull_request:
   push:
-    branches: [main]
+    branches: [ft-dev, master]
 
 permissions:
   contents: read

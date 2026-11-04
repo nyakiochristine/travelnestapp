@@ -18,7 +18,7 @@ services:
       - key: CLIENT_URL
         sync: false
       - key: REQUIRE_EMAIL_VERIFICATION
-        value: "true"
+        value: "false"
       - key: DIRECT_PASSWORD_RESET
         value: "false"
       - key: SMTP_HOST

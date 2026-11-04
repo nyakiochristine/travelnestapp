@@ -52,7 +52,15 @@ router.post('/login', async (req, res) => {
     if (!EMAIL_PATTERN.test(email || '') || !password) return res.status(400).json({ error: 'Enter a valid email address and password.' });
     const user = await User.findOne({ email });
     if (!user || !(await bcrypt.compare(password, user.password))) return res.status(401).json({ error: 'Incorrect email or password.' });
-    if (user.isEmailVerified === false) return res.status(403).json({ error: 'Verify your email before logging in.' });
+    // Allows a safe transition back to demo/local mode if email verification is
+    // disabled after accounts were created while SMTP was unavailable.
+    if (user.isEmailVerified === false && requireEmailVerification) {
+      return res.status(403).json({ error: 'Verify your email before logging in.' });
+    }
+    if (user.isEmailVerified === false) {
+      user.isEmailVerified = true;
+      await user.save();
+    }
     const token = jwt.sign({ userId: user._id }, JWT_SECRET, { expiresIn: '7d' });
     res.json({ token, user: { _id: user._id, name: user.name, email: user.email } });
   } catch (error) { res.status(500).json({ error: 'Could not log you in.' }); }
