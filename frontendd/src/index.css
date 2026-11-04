@@ -127,3 +127,8 @@ h1, h2, h3, h4, h5, h6, .nav-brand a { font-family: 'DM Sans', system-ui, sans-s
 .public-itinerary-card, .itinerary-details, .modal-content, .trip-preview-card,
 .create-itinerary-form, .itinerary-card, .profile-card { border-radius: 8px !important; box-shadow: 0 2px 10px rgba(9, 43, 76, .07) !important; }
 .btn-primary, .btn-secondary, .btn-ml, .btn-login, .btn-register, .create-btn, .planner-submit { border-radius: 6px !important; box-shadow: none !important; }
+
+/* Motion is reserved for feedback: controls lift a little, never distract. */
+button:not(:disabled), .feed-create-link, .featured-link, .profile-card, .itinerary-card { transition: transform .18s ease, box-shadow .18s ease, background-color .18s ease; }
+button:not(:disabled):hover, .feed-create-link:hover, .featured-link:hover { transform: translateY(-2px); }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; } }
