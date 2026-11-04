@@ -19,6 +19,6 @@ test('submits login credentials and stores the returned session', async () => {
   fireEvent.change(screen.getByPlaceholderText('Email'), { target: { value: 'amina@example.com' } });
   fireEvent.change(screen.getByPlaceholderText('Password'), { target: { value: 'Password1' } });
   fireEvent.click(screen.getByRole('button', { name: 'Login' }));
-  expect(await screen.findByText(/welcome back/i)).toBeInTheDocument();
+  expect(await screen.findByText(/signed in/i)).toBeInTheDocument();
   expect(login).toHaveBeenCalledWith({ token: 'session-token', user: { _id: '1', name: 'Amina' } });
 });

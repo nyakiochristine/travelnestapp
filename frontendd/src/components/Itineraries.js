@@ -56,7 +56,7 @@ function Itineraries() {
   };
   if (!user) return <p className="login-message">Please log in to explore itineraries.</p>;
   return <main className="itineraries-feed">
-    <header className="feed-intro"><div><span className="section-kicker">TravelNest community</span><h1>Find your next great route</h1><p>Real itineraries, thoughtful notes and places worth going out of your way for.</p></div><Link className="feed-create-link" to="/create">＋ Create a trip</Link></header>
+    <header className="feed-intro"><div><span className="section-kicker">TravelNest community</span><h1>Explore itineraries</h1><p>Browse trips, notes, and places shared by other travellers.</p></div><Link className="feed-create-link" to="/create">＋ Create a trip</Link></header>
     <Search itineraries={itineraries} setFilteredItineraries={setFilteredItineraries} />
     {notice && <div className="feed-notice">{notice}<button onClick={() => setNotice('')}>×</button></div>}
     {filteredItineraries.length === 0 ? <p className="empty-message">No itineraries match your filters yet.</p> : <section className="feed-list">{filteredItineraries.map(itinerary => {

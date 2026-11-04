@@ -22,9 +22,9 @@ const CoverPage = () => {
       <div className="cover-main">
         <div className="hero-image" aria-hidden="true" />
         <div className="cover-copy">
-          <h1 className="cover-title">Make a trip you will remember before you leave.</h1>
+          <h1 className="cover-title">Plan your next trip.</h1>
           <div className="cover-subtitle">
-            Create an itinerary, discover routes shared by other travellers and keep every great travel idea in one place.
+            Build an itinerary, browse routes from other travellers, and keep your plans in one place.
           </div>
           <div className="cover-buttons">
             <button className="explore-btn" onClick={() => navigate('/register')}>
@@ -43,7 +43,7 @@ const CoverPage = () => {
         </div>
       </div>
       <section className="how-it-works" aria-label="How TravelNest works">
-        <div className="how-intro"><span className="section-kicker">A better way to keep track</span><h2>Plan it. Share it. Go.</h2><p>Keep the useful parts of travel: notes, routes and recommendations, close to your next journey.</p></div>
+        <div className="how-intro"><span className="section-kicker">Travel planning</span><h2>Plan, save, share.</h2><p>Keep your notes, routes, and recommendations together.</p></div>
         <div className="how-steps">
           <article className="how-step"><span className="step-number">01</span><h3>Build a route</h3><p>Add stops, dates, activities and a budget in one considered itinerary.</p></article>
           <article className="how-step"><span className="step-number">02</span><h3>Find useful ideas</h3><p>Explore routes and recommendations shared by people who have made the trip.</p></article>
@@ -52,7 +52,7 @@ const CoverPage = () => {
       </section>
       <section className="featured-trips">
         <div className="featured-heading">
-          <div><span className="section-kicker">From the community</span><h2>Itineraries worth stealing</h2><p>See how African travellers are making every stop count.</p></div>
+          <div><span className="section-kicker">From travellers</span><h2>Routes from the community</h2><p>Browse trips shared by other travellers.</p></div>
           <button className="featured-link" onClick={() => navigate('/register')}>Explore the feed →</button>
         </div>
         {featuredError && <p className="inline-notice" role="status">Community routes are temporarily unavailable. You can still start planning your own trip.</p>}
@@ -65,7 +65,7 @@ const CoverPage = () => {
           )) : ['Cape Town in a weekend', 'Coastal escape: Mombasa to Diani', 'A slow safari through the Mara'].map((title, index) => (
             <article className={`trip-preview-card preview-${index + 1}`} key={title}>
               <div className="trip-preview-image"><span>Featured route</span></div>
-              <div className="trip-preview-body"><p className="trip-preview-author">From the community</p><h3>{title}</h3><p>Save this route and make it your own</p></div>
+              <div className="trip-preview-body"><p className="trip-preview-author">From the community</p><h3>{title}</h3><p>Save this route to edit later</p></div>
             </article>
           ))}
         </div>

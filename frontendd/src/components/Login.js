@@ -25,7 +25,7 @@ function Login() {
 
       if (response.ok) {
         login({ token: data.token, user: data.user });
-        setFeedback('Welcome back. Taking you to your trip planner…');
+        setFeedback('Signed in. Opening your trips…');
         setTimeout(() => navigate('/dashboard'), 500);
       } else {
         setFeedback(data.error || 'We could not sign you in. Please check your details.');

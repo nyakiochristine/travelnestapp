@@ -64,15 +64,15 @@ function Dashboard({ initialTab = 'planner' }) {
     <div className="dashboard-container">
       <header className="dashboard-header">
         <p className="dashboard-kicker">Your travel space</p>
-        <h1 className="dashboard-title">Your workspace</h1>
-        <p>Plan a new route or pick up an itinerary you have already started.</p>
+        <h1 className="dashboard-title">Your trips</h1>
+        <p>Start a route or continue an itinerary you have already saved.</p>
       </header>
 
       {/* --- TAB NAVIGATION --- */}
       <div className="tab-navigation">
-        <button className={activeTab === 'planner' ? 'active' : ''} onClick={() => setActiveTab('planner')}>Smart planner</button>
+        <button className={activeTab === 'planner' ? 'active' : ''} onClick={() => setActiveTab('planner')}>Trip planner</button>
         <button className={activeTab === 'journal' ? 'active' : ''} onClick={() => setActiveTab('journal')}>Trip builder</button>
-        <button className={activeTab === 'admin' ? 'active' : ''} onClick={() => setActiveTab('admin')}>Business workspace</button>
+        <button className={activeTab === 'admin' ? 'active' : ''} onClick={() => setActiveTab('admin')}>Business listings</button>
       </div>
 
       {/* --- ACTIVE TOOL AREA --- */}
@@ -90,7 +90,7 @@ function Dashboard({ initialTab = 'planner' }) {
         {message && <div className="dashboard-message" role="status">{message}<button aria-label="Dismiss message" onClick={() => setMessage('')}>×</button></div>}
         <div className="itinerary-grid">
           {loading ? <p className="loading" role="status">Loading your itineraries…</p> : itineraries.length === 0 ? (
-            <div className="workspace-empty"><p className="section-label">Nothing here yet</p><h3>Start with a place you want to see.</h3><p>Use the planner for a quick route, or build an itinerary stop by stop.</p><button className="btn-primary" onClick={() => setActiveTab('planner')}>Open smart planner</button></div>
+            <div className="workspace-empty"><p className="section-label">No saved trips</p><h3>Start with a place you want to visit.</h3><p>Use the planner for a route outline, or build an itinerary stop by stop.</p><button className="btn-primary" onClick={() => setActiveTab('planner')}>Open trip planner</button></div>
           ) : (
             itineraries.map((it) => (
               <div key={it._id} className="itinerary-card">

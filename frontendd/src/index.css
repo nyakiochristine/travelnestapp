@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap');
 
 :root {
   --ink: #092b4c;
@@ -114,3 +114,16 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
 .social-actions button { background: #00aeb8 !important; }
 .social-actions button.liked { background: #ff6b5e !important; }
 .social-actions button:hover:not([disabled]) { background: #007f8a !important; }
+
+/* Keep the voice practical: no ornamental type or decorative mini-headlines. */
+h1, h2, h3, h4, h5, h6, .nav-brand a { font-family: 'DM Sans', system-ui, sans-serif !important; letter-spacing: -.025em !important; }
+.section-kicker, .cover-eyebrow, .dashboard-kicker, .section-label,
+.tool-header > .badge, .planner-result > div > .badge,
+.create-itinerary-header > span, .place-heading > span,
+.modal-header > div > span, .place-group-title > span, .step-number { display: none !important; }
+
+/* Quieter product surfaces: useful content over decorative cards. */
+.tool-card, .feed-card, .profile-header, .profile-edit-form, .convo-list, .chat-panel,
+.public-itinerary-card, .itinerary-details, .modal-content, .trip-preview-card,
+.create-itinerary-form, .itinerary-card, .profile-card { border-radius: 8px !important; box-shadow: 0 2px 10px rgba(9, 43, 76, .07) !important; }
+.btn-primary, .btn-secondary, .btn-ml, .btn-login, .btn-register, .create-btn, .planner-submit { border-radius: 6px !important; box-shadow: none !important; }
