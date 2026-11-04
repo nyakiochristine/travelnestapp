@@ -1,11 +1,11 @@
 :root {
-  --burgundy: #075985;
-  --burgundy-dark: #0c3654;
-  --burgundy-soft: #e0f2fe;
-  --border-soft: #dbe7ed;
-  --text-main: #102a43;
-  --text-muted: #627d98;
-  --gold: #f6bd60;
+  --burgundy: #00aeb8;
+  --burgundy-dark: #07345c;
+  --burgundy-soft: #dff8fa;
+  --border-soft: #cfe3ed;
+  --text-main: #092b4c;
+  --text-muted: #557089;
+  --gold: #ff6b5e;
 }
 
 .dashboard-container {

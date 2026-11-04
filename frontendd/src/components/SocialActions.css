@@ -6,7 +6,7 @@
 }
 
 .social-actions button {
-  background: #1976d2;
+  background: #00aeb8;
   border: none;
   color: white;
   border-radius: 18px;
@@ -19,11 +19,11 @@
 }
 
 .social-actions button.liked {
-  background: #d32f2f;
+  background: #ff6b5e;
 }
 
 .social-actions button:hover:not([disabled]) {
-  background-color: #145ea2;
+  background-color: #007f8a;
   transform: translateY(-2px);
 }
 
@@ -50,7 +50,7 @@
 }
 
 .comment-form input:focus {
-  outline-color: #1976d2;
+  outline-color: #00aeb8;
   background-color: #e7f2fc;
 }
 

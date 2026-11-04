@@ -106,3 +106,11 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
 .add-place-btn, .emoji-btn, .gif-btn, .profile-stats span, .interest-chips button { background: #dff8fa !important; color: #07345c !important; border-color: #9bdde3 !important; }
 .tab-navigation button.active { color: #00aeb8 !important; box-shadow: inset 0 -2px 0 #00aeb8 !important; }
 .chat-messages, .chat-empty { background: linear-gradient(180deg, #f5fcff, #fff) !important; }
+.cover-main { background-color: #092b4c; }
+.cover-main::after { background: linear-gradient(90deg, rgba(9, 43, 76, .78), rgba(9, 43, 76, .28) 62%, rgba(9, 43, 76, .06)) !important; }
+.trip-search button, .community-search button, .profile-card-copy span, .feed-trip-meta a { background-color: #00aeb8 !important; color: #fff !important; }
+.page-title, .public-itinerary-title-date h3, .place-info h4, .profiles-hero h1, .profile-card-copy h3 { color: #092b4c !important; }
+.public-itinerary-card, .profile-card, .feed-card, .itinerary-card, .tool-card, .create-itinerary-form, .profile-header, .modal-content { border-color: #cfe3ed !important; }
+.social-actions button { background: #00aeb8 !important; }
+.social-actions button.liked { background: #ff6b5e !important; }
+.social-actions button:hover:not([disabled]) { background: #007f8a !important; }

@@ -1,14 +1,14 @@
 /* Brand colors */
 :root {
-  --burgundy: #7b001c;
-  --burgundy-dark: #5b0015;
-  --burgundy-soft: #fff3f6;
-  --gold: #f6b93b;
-  --text-main: #1c2233;
-  --text-muted: #6b7280;
-  --card-border: #e3e0e5;
+  --burgundy: #092b4c;
+  --burgundy-dark: #07345c;
+  --burgundy-soft: #dff8fa;
+  --gold: #ff6b5e;
+  --text-main: #092b4c;
+  --text-muted: #557089;
+  --card-border: #cfe3ed;
   --card-bg: #ffffff;
-  --chip-bg: #f7f4f7;
+  --chip-bg: #f5fcff;
 }
 
 .itineraries-feed {

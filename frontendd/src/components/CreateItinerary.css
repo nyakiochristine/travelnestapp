@@ -1,11 +1,11 @@
 :root {
-  --burgundy: #007c78;
-  --burgundy-dark: #005d5a;
-  --burgundy-soft: #e2f3ee;
-  --border-soft: #c9e6df;
-  --text-main: #153b3a;
-  --text-muted: #5c7773;
-  --field-bg: #fbfefd;
+  --burgundy: #00aeb8;
+  --burgundy-dark: #07345c;
+  --burgundy-soft: #dff8fa;
+  --border-soft: #cfe3ed;
+  --text-main: #092b4c;
+  --text-muted: #557089;
+  --field-bg: #f7fbff;
 }
 
 /* Structured trip builder using teal, sand and coral only. */

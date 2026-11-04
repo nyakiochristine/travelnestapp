@@ -8,7 +8,7 @@
 .page-title {
   font-size: 1.7rem;
   font-weight: 800;
-  color: #800020;
+  color: #092b4c;
   margin-bottom: 1.5rem;
   text-align: center;
 }
@@ -16,7 +16,7 @@
 .login-message,
 .empty-message {
   text-align: center;
-  color: #7d0b0b;
+  color: #557089;
   margin-top: 2rem;
 }
 
@@ -26,7 +26,7 @@
   border-radius: 18px;
   box-shadow: 0 3px 22px rgba(26, 35, 126, 0.15);
   margin-bottom: 2rem;
-  border: 1px solid #e3e9f7;
+  border: 1px solid #cfe3ed;
   padding: 1rem 1.2rem 1rem 1.2rem;
   transition: box-shadow 0.26s ease, transform 0.15s ease;
 }
@@ -60,7 +60,7 @@
 .public-itinerary-title-date h3 {
   margin: 0 0 0.2rem 0;
   font-weight: 800;
-  color: #15294f;
+  color: #092b4c;
   font-size: 1.25rem;
 }
 
@@ -111,12 +111,12 @@
   margin: 0;
   font-size: 1.02rem;
   font-weight: 700;
-  color:  #a91c3f;
+  color: #07345c;
 }
 
 .place-info time {
   font-size: 0.85rem;
-  color:  #a92d4c;
+  color: #00aeb8;
   display: block;
   margin-top: 0.12rem;
 }

@@ -1,6 +1,6 @@
 .register-container {
   min-height: 100vh;
-  background: linear-gradient(135deg, #e0f2fe, #fffaf0 58%, #fef3c7);
+  background: linear-gradient(135deg, #e8f8fb, #f7fbff 58%, #fff0eb);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -17,11 +17,11 @@
 }
 
 .travel {
-  color: #0c3654;
+  color: #092b4c;
 }
 
 .nest {
-  color: #e76f51;
+  color: #ff6b5e;
   margin-left: 8px;
 }
 
@@ -33,7 +33,7 @@
   background: white;
   padding: 32px;
   border-radius: 18px;
-  box-shadow: 0 14px 35px rgba(12, 54, 84, 0.16);
+  box-shadow: 0 14px 35px rgba(9, 43, 76, 0.16);
 }
 
 .input-field {
@@ -47,7 +47,7 @@
 }
 
 .input-field:focus {
-  border-color: #075985;
+  border-color: #00aeb8;
   outline: none;
 }
 
@@ -55,7 +55,7 @@
   padding: 16px 0;
   font-size: 1.2rem;
   font-weight: 700;
-  background-color: #075985;
+  background-color: #00aeb8;
   border: none;
   border-radius: 14px;
   color: #ffffff;
@@ -64,7 +64,7 @@
 }
 
 .btn-register:hover {
-  background-color: #0c3654;
+  background-color: #007f8a;
 }
 .password-hint, .auth-message, .auth-link {
   width: 100%;
@@ -77,5 +77,5 @@
   text-align: center;
 }
 
-.auth-message { color: #075985; font-weight: 600; }
-.auth-link { display: block; color: #075985; font-weight: 700; }
+.auth-message { color: #07345c; font-weight: 600; }
+.auth-link { display: block; color: #007f8a; font-weight: 700; }
